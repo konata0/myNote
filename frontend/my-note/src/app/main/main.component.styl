@@ -1,0 +1,60 @@
+header-height = 40px
+left-width = 20%
+my-blue = rgb(24, 144, 255)
+
+.main-page
+    padding 0
+    margin 0
+    height 100%
+    width 100%
+
+.main-header
+    padding 0px 30px 0px 30px
+    margin 0
+    position fixed
+    top 0
+    left 0
+    width 100%
+    height header-height
+    box-shadow 0px 2px 3px #ddd;
+    background-color #ffffff
+    .main-header-left
+        float left
+        padding 4px 0px 4px 0px
+    .main-header-middle
+        float left
+        line-height header-height
+        .title
+            font-size 20px
+            margin-left 20px
+            color my-blue
+    .main-header-right
+        float right 
+        line-height header-height
+        font-size 20px 
+
+
+.main-left
+    padding 0
+    margin 0
+    position fixed
+    top header-height
+    left 0
+    width left-width
+    bottom  0
+    overflow auto
+    word-break break-all
+    box-shadow: 2px 0px 3px #ddd;
+
+    
+
+.main-router-page
+    padding 0
+    margin 0
+    position fixed
+    top header-height
+    left left-width
+    right  0
+    bottom  0
+    overflow auto
+    word-break break-all

@@ -1,0 +1,37 @@
+localStorage = {
+	myNotePassword: "123",
+	myNoteAutoLogin: true
+}
+session = {
+	myNoteToken: null,
+	myNoteIfLogin: true
+}
+
+
+接口
+/Login POST：
+	send = {
+		password: "123"
+	}
+	re = {
+		code: 0(normal)/1(wrong password),
+		data: {
+			token: "1234567890"
+		}
+	}
+
+/Config GET：
+	re = {
+		code: 0(normal)
+		data: {
+			title: "MyNote",
+		}
+	}
+
+
+
+
+
+
+
+

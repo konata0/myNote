@@ -1,0 +1,30 @@
+<div class="main-page" *ngIf="configInit">
+
+    <div class="main-router-page">
+        <router-outlet></router-outlet>
+    </div>
+    
+
+    <div class="main-left">
+        left
+
+    </div>
+
+    
+
+    <div class="main-header">
+        <div class="main-header-left">
+            <img src="/assets/img/logo.png" width="32px" />    
+        </div>
+        <div class="main-header-middle">
+            <b class="title">{{config["title"]}}</b>       
+        </div>
+        <div class="main-header-right">
+            <a nz-col [nzSpan]="1" (click)="logout()"><i nz-icon [nzType]="'logout'"></i></a>
+        </div>
+    </div>
+
+
+</div>
+
+

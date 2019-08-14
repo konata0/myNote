@@ -1,0 +1,46 @@
+<div class="login-page">
+    <div class="login-card">
+
+        <div nz-row nzAlign="middle" class="itemLine">
+            <div class="itemLine-img">
+                <img src="/assets/img/logo.png" width="128px" />
+            </div>           
+        </div>
+
+        <div nz-row nzAlign="middle" class="itemLine">
+            <div class="itemLine-title">
+                <b>MyNote</b>
+            </div>           
+        </div>
+
+        <div nz-row nzAlign="middle" class="itemLine">
+            <div nz-col [nzSpan]="4" class="left-col">
+                <b>密码:</b>  
+            </div>
+            <div nz-col [nzSpan]="16" [nzOffset]="2" class="right-col">
+                <input nz-input maxlength=16 type="password" [(ngModel)]="password"/>
+            </div>
+        </div>
+
+        <div nz-row nzAlign="middle" class="itemLine">
+            <div nz-col [nzSpan]="22" class="left-col">
+                <label nz-checkbox [(ngModel)]="autoLogin">自动登录</label>
+            </div>
+        </div>
+
+        <br /><br />
+
+        <div nz-row nzAlign="middle" class="itemLine">
+            <div nz-col [nzSpan]="10" class="left-col">
+                <button nz-button nzType="primary" (click)="visitorLogin()" [nzLoading]="visitorLoginWaiting">游客登录</button>
+            </div>
+            <div nz-col [nzSpan]="10" [nzOffset]="4" class="right-col">
+                <button nz-button nzType="primary" (click)="adminLogin()" [nzLoading]="adminLoginWaiting">密码登录</button>
+            </div>
+        </div>
+
+        
+
+    </div>
+</div>
+
