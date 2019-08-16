@@ -17,7 +17,7 @@ const httpOptions = {
 })
 export class CommonService {
 
-  server: string = "https://easy-mock.com/mock/5d1f027a62ae1a2f96d8ec5b";
+  server: string = "http://127.0.0.1:80/php";
 
   constructor(
     public http: HttpClient,
@@ -26,7 +26,7 @@ export class CommonService {
 
   // 登录反馈
   passwordCheck(data: any){
-    return this.http.post(this.server + "/Login", data)
+    return this.http.post(this.server + "/Login.php", data)
     .pipe(
       catchError(this.handleError('passwordCheck:', []))
     );
@@ -34,7 +34,7 @@ export class CommonService {
 
   // 获取设置
   getConfig(){
-    return this.http.get(this.server + "/Config")
+    return this.http.get(this.server + "/Config.php")
     .pipe(
       catchError(this.handleError('handleError:', []))
     );
