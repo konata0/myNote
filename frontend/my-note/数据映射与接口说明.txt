@@ -9,12 +9,17 @@ session = {
 
 
 接口
+code:
+	0: normal
+	-1: wrong password
+	-2: wrong token
+	
 /Login POST：
 	send = {
 		password: "123"
 	}
 	re = {
-		code: 0(normal)/1(wrong password),
+		code: 0/-1,
 		data: {
 			token: "1234567890"
 		}

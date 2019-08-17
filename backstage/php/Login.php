@@ -1,26 +1,32 @@
 ﻿<?php
-
-	$password_validation = "123456";
-
-	$post = json_decode(file_get_contents('php://input'), true);
+	require './functions.php';
+	
+	// 获取输入密码
+	$post = getJsonFromPost();
 	$password = $post["password"];
 	
+	// 读取本地密码
+	$password_validation = getItem("password");
+	
+	// 生成token
+	$token = md5(uniqid(microtime(true),true));	
 	$data = array(
-		"token" => "0123456789"
+		"token" => $token
 	);
 	
-	if($password == $password_validation){
+	// 判断
+	if($password === $password_validation){
 		$re = array(
 			"code" => 0,
 			"data" => $data
 		);
+		// token写入
+		setItem("token", $token);
 	}else{
 		$re = array(
 			"code" => -1
 		);
 	}
 	
-	
-	header('Content-Type:application/json; charset=utf-8');
-	exit(json_encode($re,JSON_UNESCAPED_UNICODE));
+	returnJson($re);
 ?>
