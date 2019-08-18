@@ -1,6 +1,6 @@
 <?php
 	require "./functions.php";
-	$config = getItem("config");
+	$config = getItem("catalogue");
 	$re = array(
 		"code" => 0,
 		"data" => $config

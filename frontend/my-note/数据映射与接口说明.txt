@@ -13,6 +13,7 @@ code:
 	0: normal
 	-1: wrong password
 	-2: wrong token
+	-3: wrong note id
 	
 /Login POST：
 	send = {
@@ -27,11 +28,63 @@ code:
 
 /Config GET：
 	re = {
-		code: 0(normal)
+		code: 0
 		data: {
 			title: "MyNote",
 		}
 	}
+
+/Catalogue GET：
+	re = {
+		code: 0
+		data: ...
+	}
+	
+/Note POST:
+	send = {
+		id: 1
+	}
+	re = {
+		code: 0/-3,
+		data: note
+	}
+
+	
+	
+数据格式：
+catalogue：[
+	{
+		id: 0,
+		name: "root",
+		type: "dir",
+		parentId: null
+		
+	},{
+		id: 1,
+		name: "note1",
+		type: "file",
+		parentId: 0
+	}
+]
+note:
+{	
+	id: 1,
+	name: "note1",
+	creatTime: "...",
+	updateTime: "...",
+	data:[
+		content1,
+		content2,
+		...
+	]
+}
+content:
+{
+	id: 1,
+	type: "h1"/"h2"/"h3"/"p"/"img"/"code",
+	content: "hello word!"/"1_1_pictureName.png"
+}
+
 
 
 

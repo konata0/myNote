@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 	require './functions.php';
 	
 	// 获取输入密码
@@ -10,12 +10,20 @@
 	
 	// 生成token
 	$token = md5(uniqid(microtime(true),true));	
-	$data = array(
-		"token" => $token
-	);
 	
 	// 判断
-	if($password === $password_validation){
+	if($password === null){
+		$data = array(
+			"token" => null
+		);
+		$re = array(
+			"code" => 0,
+			"data" => $data
+		);
+	}else if($password === $password_validation){
+		$data = array(
+			"token" => $token
+		);
 		$re = array(
 			"code" => 0,
 			"data" => $data

@@ -1,1 +1,1 @@
-{"password":"123456","token":"8cc9e23d10b01ff2acbad8854ac051f5","config":{"title":"MyNote"}}
+{"password":"123456","token":"86ab4049aadc5175001562af0a189ad8","config":{"title":"MyNote"},"catalogue":[{"id":0,"name":"root","type":"dir","parentId":null},{"id":1,"name":"dir1","type":"文件夹1","parentId":0},{"id":2,"name":"dir2","type":"dir","parentId":0},{"id":3,"name":"note1","type":"file","parentId":1}]}
