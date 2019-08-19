@@ -1,9 +1,9 @@
 <?php
 	require "./functions.php";
-	$config = getItem("catalogue");
+	$catalogue = getItem("catalogue");
 	$re = array(
 		"code" => 0,
-		"data" => $config
+		"data" => $catalogue
 	);
 	returnJson($re);
 ?>

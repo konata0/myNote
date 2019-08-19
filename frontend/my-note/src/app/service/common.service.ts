@@ -40,6 +40,43 @@ export class CommonService {
     );
   }
 
+  // 获取目录
+  getCatalogue(){
+    return this.http.get(this.server + "/Catalogue.php")
+    .pipe(
+      catchError(this.handleError('getCatalogue:', []))
+    );
+  }
+
+  // 文件夹重命名
+  dirRename(token0: string, id0: number, name0: string){
+    let data = {
+      token: token0,
+		  operation: "rename",
+		  id: id0,
+		  name: name0,
+		  parentId: 0
+    };
+    return this.http.post(this.server + "/DirOperation.php", data)
+    .pipe(
+      catchError(this.handleError('DirOperation:', []))
+    );
+  }
+  // 新建文件夹
+  newDir(token0: string, parentId0: number, name0: string){
+    let data = {
+      token: token0,
+		  operation: "addDir",
+		  id: 0,
+		  name: name0,
+		  parentId: parentId0
+    };
+    return this.http.post(this.server + "/DirOperation.php", data)
+    .pipe(
+      catchError(this.handleError('DirOperation:', []))
+    );
+  }
+
 
 
 

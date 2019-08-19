@@ -1,4 +1,4 @@
-localStorage = {
+﻿localStorage = {
 	myNotePassword: "123",
 	myNoteAutoLogin: true
 }
@@ -14,6 +14,7 @@ code:
 	-1: wrong password
 	-2: wrong token
 	-3: wrong note id
+	-4: fail to edit dir
 	
 /Login POST：
 	send = {
@@ -47,6 +48,34 @@ code:
 	re = {
 		code: 0/-3,
 		data: note
+	}
+
+/DirOperation POST:
+	send = {
+
+		token: "0123456789",
+		operation: "addDir"/"addFile"/"rename"/"cut"/"copy"/"delete",
+		id: 0,
+		name: "name",
+		parentId: 0
+
+		// addDir,addFile
+		name: "newDirOrFile"
+		parentId: 0
+
+		// rename
+		id: 3
+		name: "newName"
+
+		// cut, copy
+		id: 3
+		parentId: 0
+
+		// delete
+		id: 3
+	}
+	re = {
+		code: 0/-2/-4
 	}
 
 	

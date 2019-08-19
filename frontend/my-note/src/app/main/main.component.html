@@ -1,12 +1,48 @@
 <div class="main-page" *ngIf="configInit">
 
     <div class="main-router-page">
+        <i nz-icon nzType="file"></i><i nz-icon nzType="file"></i>
         <router-outlet></router-outlet>
     </div>
     
 
     <div class="main-left">
-        left
+        <div style="text-align: center; margin: 200px;" *ngIf="!catalogueInit">
+            <nz-spin nzSimple></nz-spin>
+        </div>
+        <div *ngIf="catalogueInit" class="catalogue-tree-div">
+            <nz-tree
+                [nzData]="catalogueTree"
+                (nzClick)="activeNodeChange($event)"
+                (nzDblClick)="openFolder($event)"
+                [nzTreeTemplate]="nzTreeTemplate"
+            ></nz-tree>
+            <ng-template #nzTreeTemplate let-node>
+            <span class="custom-node" [class.active]="activeNode?.key === node.key">
+                <span *ngIf="!node.isLeaf" (contextmenu)="contextMenu($event, dirMenu, node)">
+                <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" (click)="openFolder(node)"></i>
+                <span class="folder-name">{{ node.title }}</span>
+                </span>
+                <span *ngIf="node.isLeaf" (contextmenu)="contextMenu($event, fileMenu, node)">
+                <i nz-icon nzType="file"></i>
+                <span class="file-name">{{ node.title }}</span>
+                </span>
+            </span>
+            </ng-template>
+            <nz-dropdown-menu #dirMenu="nzDropdownMenu">
+                <ul nz-menu>
+                    <li nz-menu-item (click)="newDir()">新建文件夹</li>
+                    <li nz-menu-item (click)="newFile()">新建文件</li>
+                    <li nz-menu-item (click)="dirRename()">重命名</li>
+                </ul>
+            </nz-dropdown-menu>
+            <nz-dropdown-menu #fileMenu="nzDropdownMenu">
+                <ul nz-menu>
+                    <li nz-menu-item >file 1</li>
+                    <li nz-menu-item >file 2</li>
+                </ul>
+            </nz-dropdown-menu>
+        </div>
 
     </div>
 
@@ -26,5 +62,39 @@
 
 
 </div>
+
+<nz-modal
+    [(nzVisible)]="ifShowDirRenameModal"
+    nzTitle="文件夹重命名"
+    (nzOnCancel)="dirRenameCancel()"
+    (nzOnOk)="dirRenameOk()"
+    [nzOkLoading]="dirRenameWaiting"
+>
+    <div nz-row nzAlign="middle" class="itemLine">
+        <div nz-col [nzSpan]="8" style="text-align: right">
+            <b>重命名：</b>      
+        </div>
+        <div nz-col [nzSpan]="15" [nzOffset]="1" >
+            <input nz-input maxlength=50 style="width: 100%;" placeholder="请输入新名字" [(ngModel)]="dirRenameNewName" />
+        </div>
+    </div>
+</nz-modal>
+
+<nz-modal
+    [(nzVisible)]="ifShowNewDirModal"
+    nzTitle="新建文件夹"
+    (nzOnCancel)="newDirCancel()"
+    (nzOnOk)="newDirOk()"
+    [nzOkLoading]="newDirWaiting"
+>
+    <div nz-row nzAlign="middle" class="itemLine">
+        <div nz-col [nzSpan]="8" style="text-align: right">
+            <b>新文件夹名：</b>      
+        </div>
+        <div nz-col [nzSpan]="15" [nzOffset]="1" >
+            <input nz-input maxlength=50 style="width: 100%;" placeholder="请输入新名字" [(ngModel)]="newDirName" />
+        </div>
+    </div>
+</nz-modal>
 
 

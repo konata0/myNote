@@ -1,5 +1,5 @@
 header-height = 40px
-left-width = 20%
+left-width = 200px
 my-blue = rgb(24, 144, 255)
 
 .main-page
@@ -44,7 +44,20 @@ my-blue = rgb(24, 144, 255)
     bottom  0
     overflow auto
     word-break break-all
-    box-shadow: 2px 0px 3px #ddd;
+    box-shadow: 2px 0px 3px #ddd
+    .catalogue-tree-div
+        padding 10px
+        :host,::ng-deep,.ant-tree
+            overflow: hidden;
+        .custom-node 
+            cursor: pointer;
+            line-height: 24px;
+            display: inline-block;
+            margin: 0 -200px;
+            padding: 0 200px;
+        .active 
+            background: #1890ff;
+            color: #fff;
 
     
 
@@ -58,3 +71,7 @@ my-blue = rgb(24, 144, 255)
     bottom  0
     overflow auto
     word-break break-all
+
+.itemLine
+    margin 15px 30px 15px 30px
+    font-size 18px

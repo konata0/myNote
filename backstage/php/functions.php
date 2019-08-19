@@ -23,7 +23,7 @@
 		return $post;
 	}
 	function returnJson($re){
-		header('Content-Type:application/json; charset=utf-8-sig');
+		header('Content-Type:application/json; charset=utf-8');
 		exit(json_encode($re,JSON_UNESCAPED_UNICODE));
 	}
 	
@@ -38,5 +38,26 @@
 			);
 			returnJson($re);
 		}
+	}
+	
+	// 新生成目录ID
+	function getNewCatalogueId(){
+		$catalogue = getItem("catalogue");
+		$newId = 0;
+		while(true){
+			$exist = false;
+			for($x = 0; $x< count($catalogue); $x++) {
+				if($catalogue[$x]["id"] === $newId){
+					$exist = true;
+					break;
+				}
+			}
+			if($exist){
+				$newId ++;
+			}else{
+				break;
+			}	
+		}
+		return $newId;
 	}
 ?>
