@@ -15,6 +15,7 @@ code:
 	-2: wrong token
 	-3: wrong note id
 	-4: fail to edit dir
+	-5: fail to edit file
 	
 /Login POST：
 	send = {
@@ -78,6 +79,30 @@ code:
 		code: 0/-2/-4
 	}
 
+/FileOperation POST:
+	send = {
+
+		token: "0123456789",
+		operation: "rename"/"cut"/"copy"/"delete",
+		id: 0,
+		name: "name",
+		parentId: 0
+
+		// rename
+		id: 3
+		name: "newName"
+
+		// cut, copy
+		id: 3
+		parentId: 0
+
+		// delete
+		id: 3
+	}
+	re = {
+		code: 0/-2/-3/-5
+	}
+
 	
 	
 数据格式：
@@ -99,7 +124,7 @@ note:
 {	
 	id: 1,
 	name: "note1",
-	creatTime: "...",
+	createTime: "...",
 	updateTime: "...",
 	data:[
 		content1,

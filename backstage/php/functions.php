@@ -1,4 +1,6 @@
 <?php
+	date_default_timezone_set('Asia/Shanghai');
+
 	// 获取设置"./security/data.json"中的数据
 	function getItem($item_name){
 		$json_string = htmlspecialchars_decode(file_get_contents("./security/data.json")); 
@@ -12,6 +14,27 @@
 		$security_data[$item_name] = $value;
 		$json_string = json_encode($security_data,JSON_UNESCAPED_UNICODE);
 		$file = fopen("./security/data.json", "w");
+		fwrite($file, $json_string);
+		fclose($file);	
+	}
+
+	// 获取设置note数据
+	function getNote($note_id){
+		$re_error = array(
+			"code" => -3
+		);
+		$note_path = "./note/".(string)$note_id.".json";	
+		if(!file_exists($note_path)){
+			returnJson($re_error);
+		}
+		$json_string = htmlspecialchars_decode(file_get_contents($note_path)); 	
+		$note = json_decode($json_string, true); 
+		return $note;
+	}
+	function setNote($note){
+		$node_id = $note["id"];
+		$json_string = json_encode($note, JSON_UNESCAPED_UNICODE);
+		$file = fopen("./note/".(string)$node_id.".json", "w");
 		fwrite($file, $json_string);
 		fclose($file);	
 	}

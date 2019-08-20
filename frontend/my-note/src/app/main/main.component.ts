@@ -38,6 +38,16 @@ export class MainComponent implements OnInit {
   ifShowNewDirModal: boolean = false;
   newDirName: string = null
   newDirWaiting:boolean = false;
+  // 新建文件
+  ifShowNewFileModal: boolean = false;
+  newFileName: string = null
+  newFileWaiting:boolean = false;
+
+  // 文件操作
+  // 重命名
+  ifShowFileRenameModal: boolean = false;
+  fileRenameNewName: string = null
+  fileRenameWaiting:boolean = false;
 
   constructor(
     private commonService: CommonService,
@@ -171,6 +181,7 @@ export class MainComponent implements OnInit {
     this.activeNode = data.node!;
     console.log(this.activeNode);
   }
+
   // 文件夹右键操作
   // 重命名
   dirRename():void{
@@ -234,6 +245,78 @@ export class MainComponent implements OnInit {
         this.message.create("success", "创建成功！");
         this.newDirWaiting = false;
         this.newDirCancel();
+        this.getCatalogue();
+      }
+    });
+  }
+
+  // 新建文件
+  newFile():void{
+    this.newFileName = null;
+    this.ifShowNewFileModal = true;
+  }
+  newFileCancel():void{
+    this.ifShowNewFileModal = false;
+    this.newFileName = null;
+  }
+  newFileOk():void{
+    if(!this.newFileName){
+      this.message.create("error", "请输入标题!");
+      return;
+    }
+    this.newFileWaiting = true;
+    this.commonService.newFile(this.token, <any>this.rightClickNode["origin"]["key"], this.newFileName).subscribe(re => {
+      if(re["code"] === -2){
+        this.message.create("error", "错误token，请重新登录！");
+        this.newFileWaiting = false;
+      }
+      if(re["code"] === -4){
+        this.message.create("error", "操作失败！");
+        this.newFileWaiting = false;
+      }
+      if(re["code"] === 0){
+        this.message.create("success", "创建成功！");
+        this.newFileWaiting = false;
+        this.newFileCancel();
+        this.getCatalogue();
+      }
+    });
+  }
+
+
+  // 文件右键操作
+  // 重命名
+  fileRename():void{
+    this.fileRenameNewName = null;
+    this.ifShowFileRenameModal = true;
+  }
+  fileRenameCancel():void{
+    this.ifShowFileRenameModal = false;
+    this.fileRenameNewName = null;
+  }
+  fileRenameOk():void{
+    if(!this.fileRenameNewName){
+      this.message.create("error", "请输入标题!");
+      return;
+    }
+    this.fileRenameWaiting = true;
+    this.commonService.fileRename(this.token, <any>this.rightClickNode["origin"]["key"], this.fileRenameNewName).subscribe(re => {
+      if(re["code"] === -2){
+        this.message.create("error", "错误token，请重新登录！");
+        this.fileRenameWaiting = false;
+      }
+      if(re["code"] === -5){
+        this.message.create("error", "操作失败！");
+        this.fileRenameWaiting = false;
+      }
+      if(re["code"] === -3){
+        this.message.create("error", "错误ID！");
+        this.fileRenameWaiting = false;
+      }
+      if(re["code"] === 0){
+        this.message.create("success", "重命名成功！");
+        this.fileRenameWaiting = false;
+        this.fileRenameCancel();
         this.getCatalogue();
       }
     });

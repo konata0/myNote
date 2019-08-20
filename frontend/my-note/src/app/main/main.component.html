@@ -38,8 +38,7 @@
             </nz-dropdown-menu>
             <nz-dropdown-menu #fileMenu="nzDropdownMenu">
                 <ul nz-menu>
-                    <li nz-menu-item >file 1</li>
-                    <li nz-menu-item >file 2</li>
+                    <li nz-menu-item (click)="fileRename()">重命名</li>
                 </ul>
             </nz-dropdown-menu>
         </div>
@@ -75,7 +74,7 @@
             <b>重命名：</b>      
         </div>
         <div nz-col [nzSpan]="15" [nzOffset]="1" >
-            <input nz-input maxlength=50 style="width: 100%;" placeholder="请输入新名字" [(ngModel)]="dirRenameNewName" />
+            <input nz-input maxlength=50 style="width: 100%;" placeholder="请输入文件夹名" [(ngModel)]="dirRenameNewName" />
         </div>
     </div>
 </nz-modal>
@@ -92,7 +91,41 @@
             <b>新文件夹名：</b>      
         </div>
         <div nz-col [nzSpan]="15" [nzOffset]="1" >
-            <input nz-input maxlength=50 style="width: 100%;" placeholder="请输入新名字" [(ngModel)]="newDirName" />
+            <input nz-input maxlength=50 style="width: 100%;" placeholder="请输入文件夹名" [(ngModel)]="newDirName" />
+        </div>
+    </div>
+</nz-modal>
+
+<nz-modal
+    [(nzVisible)]="ifShowNewFileModal"
+    nzTitle="新建文件"
+    (nzOnCancel)="newFileCancel()"
+    (nzOnOk)="newFileOk()"
+    [nzOkLoading]="newFileWaiting"
+>
+    <div nz-row nzAlign="middle" class="itemLine">
+        <div nz-col [nzSpan]="8" style="text-align: right">
+            <b>新文件名：</b>      
+        </div>
+        <div nz-col [nzSpan]="15" [nzOffset]="1" >
+            <input nz-input maxlength=50 style="width: 100%;" placeholder="请输入标题" [(ngModel)]="newFileName" />
+        </div>
+    </div>
+</nz-modal>
+
+<nz-modal
+    [(nzVisible)]="ifShowFileRenameModal"
+    nzTitle="文件重命名"
+    (nzOnCancel)="fileRenameCancel()"
+    (nzOnOk)="fileRenameOk()"
+    [nzOkLoading]="fileRenameWaiting"
+>
+    <div nz-row nzAlign="middle" class="itemLine">
+        <div nz-col [nzSpan]="8" style="text-align: right">
+            <b>重命名：</b>      
+        </div>
+        <div nz-col [nzSpan]="15" [nzOffset]="1" >
+            <input nz-input maxlength=50 style="width: 100%;" placeholder="请输入标题" [(ngModel)]="fileRenameNewName" />
         </div>
     </div>
 </nz-modal>
