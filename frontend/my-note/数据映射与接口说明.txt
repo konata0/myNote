@@ -45,8 +45,9 @@ code:
 		data: ...
 	}
 	
-/Note POST:
+/GetNote POST:
 	send = {
+		token: "0123456"
 		id: 1
 	}
 	re = {

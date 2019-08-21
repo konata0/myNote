@@ -1,4 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
+import { LOCAL_STORAGE, SESSION_STORAGE, WebStorageService} from 'angular-webstorage-service';
+
+import { Router, ActivatedRoute } from '@angular/router';
+import { NzMessageService } from 'ng-zorro-antd';
+import { NzFormatEmitEvent, NzTreeNode } from 'ng-zorro-antd/core';
+
+import { CommonService } from '../../service/common.service';
 
 @Component({
   selector: 'app-note',
@@ -7,9 +14,58 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NoteComponent implements OnInit {
 
-  constructor() { }
+  token: string = null;
+  noteId: number = null;
+
+  note: any = null;
+  noteInit: boolean = false;
+
+  constructor(
+    private route: ActivatedRoute,
+    private commonService: CommonService,
+    @Inject(LOCAL_STORAGE) private localStorage: WebStorageService,
+    @Inject(SESSION_STORAGE) private sessionStorage: WebStorageService,
+  ) { }
 
   ngOnInit() {
+    this.token = this.sessionStorage.get("myNoteToken");
+    this.noteId = +this.route.snapshot.paramMap.get('id');
+    this.getNote();
+  }
+
+  getNote(){
+    this.noteInit = false;
+    this.commonService.getNote(this.token, this.noteId).subscribe(re => {
+      if(re["code"] === 0){
+        this.note = re["data"];
+        this.dataSort();
+        this.notePretreat();
+        console.log(this.note);     
+      }else{
+        this.commonService.wrongCode(re, "getNote");
+      }
+    });
+  }
+
+  // 数据预处理
+  notePretreat(){
+    this.noteInit = false;
+    (<Array<any>>this.note["data"]).forEach(item => {
+
+    });
+    this.noteInit = true;
+  }
+  
+  // 除去null，排序并修正id
+  sortById = function(item1: any, item2: any){
+    return item1["id"] - item2["id"];
+  }
+  dataSort(){
+    this.note["data"] = (<Array<any>>this.note["data"]).filter(item => item);
+    (<Array<any>>this.note["data"]).sort(this.sortById);
+    for(let i = 0; i <= (<Array<any>>this.note["data"]).length - 1; i++){
+      (<Array<any>>this.note["data"])[i]["id"] = i;
+    }
   }
 
 }

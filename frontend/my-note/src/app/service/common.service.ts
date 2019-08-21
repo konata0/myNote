@@ -189,6 +189,18 @@ export class CommonService {
       catchError(this.handleError('cut:', []))
     );
   }
+
+  // 获取note
+  getNote(token0: string, id0: number){
+    let data = {
+      token: token0,
+      id: id0
+    }
+    return this.http.post(this.server + "/GetNote.php", data)
+    .pipe(
+      catchError(this.handleError('GetNote:', []))
+    );
+  }
   
 
   // 请求异常的处理

@@ -223,13 +223,15 @@ export class MainComponent implements OnInit {
   }
   activeNodeChange(data: NzFormatEmitEvent): void {
     this.activeNode = data.node!;
-    //console.log(this.activeNode);
+    if(this.activeNode.origin["isLeaf"]){
+      this.router.navigateByUrl("/main/note/" + (<number><any>this.activeNode.origin["key"]).toString());
+    }
   }
 
   // 文件夹右键操作
   // 重命名
   dirRename():void{
-    this.dirRenameNewName = null;
+    this.dirRenameNewName = <any>this.rightClickNode["origin"]["title"];
     this.ifShowDirRenameModal = true;
   }
   dirRenameCancel():void{
@@ -349,7 +351,7 @@ export class MainComponent implements OnInit {
   // 文件右键操作
   // 重命名
   fileRename():void{
-    this.fileRenameNewName = null;
+    this.fileRenameNewName = <any>this.rightClickNode["origin"]["title"];
     this.ifShowFileRenameModal = true;
   }
   fileRenameCancel():void{

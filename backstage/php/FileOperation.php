@@ -35,17 +35,19 @@
         returnJson($re_success);
 	}
 
-	// 隐藏公开文件夹
+	// 隐藏公开文件
 	if($operation === "changePrivate"){
+		$result = null;
 		for($x = 0; $x< count($catalogue); $x++) {
 			if($catalogue[$x]["id"] === $id){
-				$catalogue[$x]["private"] = !$catalogue[$x]["private"];
+				$result = !$catalogue[$x]["private"];
+				$catalogue[$x]["private"] = $result;
 				setItem("catalogue", $catalogue);
 				break;
 			}
 		}
 		$note = getNote($id);
-        $note["private"] =  !$note["private"];
+        $note["private"] = $result;
         setNote($note);
         returnJson($re_success);
 	}

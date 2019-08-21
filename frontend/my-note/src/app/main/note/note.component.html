@@ -1,1 +1,43 @@
-<p>note works!</p>
+<div style="text-align: center; margin: 150px;" *ngIf="!noteInit">
+    <nz-spin nzSimple nzSize="large"></nz-spin>
+</div>
+
+<div class="note-page" *ngIf="noteInit">
+
+    <div class="title">
+        <b>{{note["name"]}}</b>
+    </div>
+    <div class="time">
+        创建：{{note["createTime"]}}
+    </div>
+    <br/>
+    <div class="time">
+        编辑：{{note["updateTime"]}}
+    </div>
+    <br/>
+    <br/>
+
+    <div *ngFor="let item of note['data']">
+        <div class="h1-type" *ngIf="item['type'] === 'h1'">
+            <b>{{item['content']}}</b>
+        </div>
+        <div class="h2-type" *ngIf="item['type'] === 'h2'">
+            <b>{{item['content']}}</b>
+        </div>
+        <div class="h3-type" *ngIf="item['type'] === 'h3'">
+            <b>{{item['content']}}</b>
+        </div>
+        <div class="p-type" *ngIf="item['type'] === 'p'">
+            {{item['content']}}
+        </div>
+        <div class="img-type" *ngIf="item['type'] === 'img'">
+
+        </div>
+        <div class="code-type" *ngIf="item['type'] === 'code'">
+
+        </div>
+                 
+    </div>
+
+    
+</div>
