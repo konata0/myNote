@@ -4,10 +4,12 @@
 	
 	$post = getJsonFromPost();
 	$token = $post["token"];
+
 	$operation = $post["operation"];
 	$name = $post["name"];
 	$id = $post["id"];
 	$parentId = $post["parentId"];
+	$private = $post["private"];
 	
 	// token验证
 	tokenValidate($token);
@@ -37,7 +39,8 @@
 			"id" => getNewCatalogueId(),
 			"name" => $name,
 			"type" => "dir",
-			"parentId" => $parentId
+			"parentId" => $parentId,
+			"private" => true
 		);
 		array_push($catalogue, $newDir);
 		setItem("catalogue", $catalogue);
@@ -51,13 +54,15 @@
 			"id" => $newId,
 			"name" => $name,
 			"type" => "file",
-			"parentId" => $parentId
+			"parentId" => $parentId,
+			"private" => true
 		);
 		array_push($catalogue, $newFileRecord);
 		setItem("catalogue", $catalogue);
 		$newFile = array(
 			"id" => $newId,
 			"name" => $name,
+			"private" => true,
 			"createTime" => date("Y-m-d H:i:s",time()),
 			"updateTime" => date("Y-m-d H:i:s",time()),
 			"data" => array()
@@ -65,5 +70,34 @@
 		setNote($newFile);
 		returnJson($re_success);
 	}
+
+	// 隐藏公开文件夹
+	if($operation === "changePrivate"){
+		for($x = 0; $x< count($catalogue); $x++) {
+			if($catalogue[$x]["id"] === $id){
+				$catalogue[$x]["private"] = !$catalogue[$x]["private"];
+				setItem("catalogue", $catalogue);
+				returnJson($re_success);
+			}
+		}
+	}
+
+	// 删除文件夹
+	if($operation === "delete"){
+		deleteDir($id);
+		returnJson($re_success);
+	}
+
+	// 剪切粘贴
+	if($operation === "cut"){
+		for($x = 0; $x< count($catalogue); $x++) {
+			if($catalogue[$x]["id"] === $id){
+				$catalogue[$x]["parentId"] = $parentId;
+				setItem("catalogue", $catalogue);
+				returnJson($re_success);
+			}
+		}
+	}
+
 	returnJson($re_error);
 ?>

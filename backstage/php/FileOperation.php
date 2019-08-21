@@ -3,10 +3,12 @@
 	
 	$post = getJsonFromPost();
 	$token = $post["token"];
+
 	$operation = $post["operation"];
 	$name = $post["name"];
 	$id = $post["id"];
 	$parentId = $post["parentId"];
+	$private = $post["private"];
 	
 	// token验证
 	tokenValidate($token);
@@ -31,6 +33,27 @@
         $note["name"] = $name;
         setNote($note);
         returnJson($re_success);
+	}
+
+	// 隐藏公开文件夹
+	if($operation === "changePrivate"){
+		for($x = 0; $x< count($catalogue); $x++) {
+			if($catalogue[$x]["id"] === $id){
+				$catalogue[$x]["private"] = !$catalogue[$x]["private"];
+				setItem("catalogue", $catalogue);
+				break;
+			}
+		}
+		$note = getNote($id);
+        $note["private"] =  !$note["private"];
+        setNote($note);
+        returnJson($re_success);
+	}
+
+	// 删除文件
+	if($operation === "delete"){
+		deleteFile($id);
+		returnJson($re_success);
 	}
 	
 	returnJson($re_error);

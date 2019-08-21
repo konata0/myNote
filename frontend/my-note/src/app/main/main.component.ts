@@ -15,6 +15,8 @@ import { CommonService } from '../service/common.service';
 export class MainComponent implements OnInit {
 
   token: string = null;
+  expandedRecord: any = null;
+
 
   // 设置
   config: any = null;
@@ -42,12 +44,22 @@ export class MainComponent implements OnInit {
   ifShowNewFileModal: boolean = false;
   newFileName: string = null
   newFileWaiting:boolean = false;
+  // 删除
+  ifShowDirDeleteModal: boolean = false;
+  dirDeleteWaiting:boolean = false;
+  // 剪切粘贴
+  cutChildId: number = null;
 
   // 文件操作
   // 重命名
   ifShowFileRenameModal: boolean = false;
   fileRenameNewName: string = null
   fileRenameWaiting:boolean = false;
+  // 删除
+  ifShowFileDeleteModal: boolean = false;
+  fileDeleteWaiting:boolean = false;
+
+  
 
   constructor(
     private commonService: CommonService,
@@ -63,8 +75,20 @@ export class MainComponent implements OnInit {
       this.router.navigateByUrl("/login");
     }
     this.token = this.sessionStorage.get("myNoteToken");
+    this.expandedRecord = this.localStorage.get("expandedRecord");
+    if(this.expandedRecord === null){
+      this.expandedRecord = [];
+      this.localStorage.set("expandedRecord", this.expandedRecord);
+    }
     this.getConfig();
     this.getCatalogue();
+  }
+
+  errorMsg(msg: string){
+    this.message.create("error", msg);
+  }
+  successMsg(msg: string){
+    this.message.create("success", msg);
   }
 
   // 获取设置
@@ -74,17 +98,31 @@ export class MainComponent implements OnInit {
       if(re["code"] === 0){
         this.config = re["data"];
         this.configInit = true;
+      }else{
+        this.commonService.wrongCode(re, "getConfig");
       }
     });
   }
 
+  // 判断文件夹是否展开
+  getExpandedRecord(id: number){
+    if(this.expandedRecord[id] === true){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
   // 获取目录
   getCatalogue(){
+    this.cutChildId = null;
     this.catalogueInit = false;
-    this.commonService.getCatalogue().subscribe(re => {
+    this.commonService.getCatalogue(this.token).subscribe(re => {
       if(re["code"] === 0){
         this.catalogue = re["data"];
         this.formCatalogueTree();
+      }else{
+        this.commonService.wrongCode(re, "getCatalogue");
       }
     });
   }
@@ -94,11 +132,11 @@ export class MainComponent implements OnInit {
         title: rootRecord["name"],
         key: rootRecord["id"],
         expanded: true,
-        children: []
+        children: [],
+        private: rootRecord["private"]
     }
     this.catalogueTree = [rootNode];
     this.formCatalogueTreeRecursive(rootNode);
-    //this.catalogueTree = this.catalogueTree[0]["children"];
     this.treeSort(this.catalogueTree[0]);
     this.clearOperation();
     this.catalogueInit = true;
@@ -111,15 +149,17 @@ export class MainComponent implements OnInit {
         childNode = {
           title: record["name"],
           key: record["id"],
-          expanded: true,
+          expanded: this.getExpandedRecord(record["id"]),
           isLeaf: false,
-          children: []
+          children: [],
+          private: record["private"]
         }
       }else{
         childNode = {
           title: record["name"],
           key: record["id"],
-          isLeaf: true
+          isLeaf: true,
+          private: record["private"]
         }
       }
       (<Array<any>>parentNode["children"]).push(childNode);
@@ -170,16 +210,20 @@ export class MainComponent implements OnInit {
   openFolder(data: NzTreeNode | Required<NzFormatEmitEvent>): void {
     if (data instanceof NzTreeNode) {
       data.isExpanded = !data.isExpanded;
+      this.expandedRecord[data["key"]] = data.isExpanded;
+      this.localStorage.set("expandedRecord", this.expandedRecord);
     } else {
       const node = data.node;
       if (node) {
         node.isExpanded = !node.isExpanded;
+        this.expandedRecord[node["key"]] = node.isExpanded;
+        this.localStorage.set("expandedRecord", this.expandedRecord);
       }
     }
   }
   activeNodeChange(data: NzFormatEmitEvent): void {
     this.activeNode = data.node!;
-    console.log(this.activeNode);
+    //console.log(this.activeNode);
   }
 
   // 文件夹右键操作
@@ -194,27 +238,20 @@ export class MainComponent implements OnInit {
   }
   dirRenameOk():void{
     if(!this.dirRenameNewName){
-      this.message.create("error", "请输入文件夹名!");
+      this.errorMsg("请输入文件夹名!");
       return;
     }
     this.dirRenameWaiting = true;
     this.commonService.dirRename(this.token, <any>this.rightClickNode["origin"]["key"], this.dirRenameNewName).subscribe(re => {
-      if(re["code"] === -2){
-        this.message.create("error", "错误token，请重新登录！");
-        this.dirRenameWaiting = false;
-      }
-      if(re["code"] === -4){
-        this.message.create("error", "操作失败！");
-        this.dirRenameWaiting = false;
-      }
       if(re["code"] === 0){
-        this.message.create("success", "重命名成功！");
+        this.successMsg("重命名成功！");
         this.dirRenameWaiting = false;
         this.dirRenameCancel();
         this.getCatalogue();
-
+      }else{
+        this.commonService.wrongCode(re, "dirRename");
+        this.dirRenameWaiting = false;
       }
-
     });
   }
   // 新建文件夹
@@ -228,28 +265,22 @@ export class MainComponent implements OnInit {
   }
   newDirOk():void{
     if(!this.newDirName){
-      this.message.create("error", "请输入文件夹名!");
+      this.errorMsg("请输入文件夹名!");
       return;
     }
     this.newDirWaiting = true;
     this.commonService.newDir(this.token, <any>this.rightClickNode["origin"]["key"], this.newDirName).subscribe(re => {
-      if(re["code"] === -2){
-        this.message.create("error", "错误token，请重新登录！");
-        this.newDirWaiting = false;
-      }
-      if(re["code"] === -4){
-        this.message.create("error", "操作失败！");
-        this.newDirWaiting = false;
-      }
       if(re["code"] === 0){
-        this.message.create("success", "创建成功！");
+        this.successMsg("创建成功！");
         this.newDirWaiting = false;
         this.newDirCancel();
         this.getCatalogue();
+      }else{
+        this.commonService.wrongCode(re, "newDir");
+        this.newDirWaiting = false;
       }
     });
   }
-
   // 新建文件
   newFile():void{
     this.newFileName = null;
@@ -261,24 +292,55 @@ export class MainComponent implements OnInit {
   }
   newFileOk():void{
     if(!this.newFileName){
-      this.message.create("error", "请输入标题!");
+      this.errorMsg("请输入标题!");
       return;
     }
     this.newFileWaiting = true;
     this.commonService.newFile(this.token, <any>this.rightClickNode["origin"]["key"], this.newFileName).subscribe(re => {
-      if(re["code"] === -2){
-        this.message.create("error", "错误token，请重新登录！");
-        this.newFileWaiting = false;
-      }
-      if(re["code"] === -4){
-        this.message.create("error", "操作失败！");
-        this.newFileWaiting = false;
-      }
       if(re["code"] === 0){
-        this.message.create("success", "创建成功！");
+        this.successMsg("创建成功！");
         this.newFileWaiting = false;
         this.newFileCancel();
         this.getCatalogue();
+      }else{
+        this.commonService.wrongCode(re, "newFile");
+        this.newFileWaiting = false;
+      }
+    });
+  }
+  // 隐藏公开
+  dirChangePrivate(){
+    this.commonService.dirChangePrivate(this.token, <any>this.rightClickNode["origin"]["key"]).subscribe(re => {
+      if(re["code"] === 0){
+        this.successMsg("修改成功！");
+        this.getCatalogue();
+      }else{
+        this.commonService.wrongCode(re, "dirChangePrivate");
+      }
+    });
+  }
+  // 文件夹删除
+  dirDelete():void{
+    this.ifShowDirDeleteModal = true;
+  }
+  dirDeleteCancel():void{
+    this.ifShowDirDeleteModal = false;
+  }
+  dirDeleteOk():void{
+    if(<any>this.rightClickNode["origin"]["key"] === 0){
+      this.errorMsg("禁止删除根目录！");
+      return;
+    }
+    this.dirDeleteWaiting = true;
+    this.commonService.dirDelete(this.token, <any>this.rightClickNode["origin"]["key"]).subscribe(re => {
+      if(re["code"] === 0){
+        this.successMsg("删除成功！");
+        this.dirDeleteWaiting = false;
+        this.dirDeleteCancel();
+        this.getCatalogue();
+      }else{
+        this.commonService.wrongCode(re, "dirDelete");
+        this.dirDeleteWaiting = false;
       }
     });
   }
@@ -296,28 +358,88 @@ export class MainComponent implements OnInit {
   }
   fileRenameOk():void{
     if(!this.fileRenameNewName){
-      this.message.create("error", "请输入标题!");
+      this.errorMsg("请输入标题!");
       return;
     }
     this.fileRenameWaiting = true;
     this.commonService.fileRename(this.token, <any>this.rightClickNode["origin"]["key"], this.fileRenameNewName).subscribe(re => {
-      if(re["code"] === -2){
-        this.message.create("error", "错误token，请重新登录！");
-        this.fileRenameWaiting = false;
-      }
-      if(re["code"] === -5){
-        this.message.create("error", "操作失败！");
-        this.fileRenameWaiting = false;
-      }
-      if(re["code"] === -3){
-        this.message.create("error", "错误ID！");
-        this.fileRenameWaiting = false;
-      }
       if(re["code"] === 0){
-        this.message.create("success", "重命名成功！");
+        this.successMsg("重命名成功！");
         this.fileRenameWaiting = false;
         this.fileRenameCancel();
         this.getCatalogue();
+      }else{
+        this.commonService.wrongCode(re, "fileRename");
+        this.fileRenameWaiting = false;
+      }
+    });
+  }
+  // 隐藏公开
+  fileChangePrivate(){
+    this.commonService.fileChangePrivate(this.token, <any>this.rightClickNode["origin"]["key"]).subscribe(re => {
+      if(re["code"] === 0){
+        this.successMsg("修改成功！");
+        this.getCatalogue();
+      }else{
+        this.commonService.wrongCode(re, "fileChangePrivate");
+      }
+    });
+  }
+  // 文件删除
+  fileDelete():void{
+    this.ifShowFileDeleteModal = true;
+  }
+  fileDeleteCancel():void{
+    this.ifShowFileDeleteModal = false;
+  }
+  fileDeleteOk():void{
+    this.fileDeleteWaiting = true;
+    this.commonService.fileDelete(this.token, <any>this.rightClickNode["origin"]["key"]).subscribe(re => {
+      if(re["code"] === 0){
+        this.successMsg("删除成功！");
+        this.fileDeleteWaiting = false;
+        this.fileDeleteCancel();
+        this.getCatalogue();
+      }else{
+        this.commonService.wrongCode(re, "fileDelete");
+        this.fileDeleteWaiting = false;
+      }
+    });
+  }
+
+  // 剪切
+  cutFrom(){
+    if(<any>this.rightClickNode["origin"]["key"] === 0){
+      this.errorMsg("禁止移动根目录！");
+      return;
+    }
+    this.cutChildId = <any>this.rightClickNode["origin"]["key"];
+  }
+  cutTo(){
+    let cutParentId = <any>this.rightClickNode["origin"]["key"];
+    let flag = false;
+    let tempId = cutParentId;
+    while(true){
+      if(tempId === null){
+        break;
+      }
+      if(tempId === this.cutChildId){
+        flag = true;
+      }
+      tempId = this.catalogue.filter(record => record["id"] === tempId)[0]["parentId"];
+    }
+    if(flag){
+      this.errorMsg("禁止以子文件夹为目标目录！");
+      return;
+    }
+    this.commonService.cut(this.token, this.cutChildId, cutParentId).subscribe(re => {
+      if(re["code"] === 0){
+        this.successMsg("修改成功！");
+        this.cutChildId = null;
+        this.getCatalogue();
+      }else{
+        this.cutChildId = null;
+        this.commonService.wrongCode(re, "cut");
       }
     });
   }
@@ -328,5 +450,9 @@ export class MainComponent implements OnInit {
     this.sessionStorage.set("myNoteToken", null);
     this.sessionStorage.set("myNoteIfLogin", false);
     this.router.navigateByUrl("/login");
+  }
+
+  log(data: any){
+    console.log(data);
   }
 }

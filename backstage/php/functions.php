@@ -83,4 +83,59 @@
 		}
 		return $newId;
 	}
+
+	// 删除图片
+	function deletePicture($picture_name){
+		unlink("./note/img/".$picture_name);
+	}
+
+	// 删除文件
+	function deleteFile($id){
+
+		$note = getNote($id);
+		$data = $note["data"];
+		for($x = 0; $x < count($data); $x++) {
+			if($data[$x]["type"] === "img"){
+				deletePicture($data[$x]["content"]);
+			}
+		}
+
+		unlink("./note/".(string)$id.".json");
+
+		$catalogue = getItem("catalogue");
+		$catalogue_new = array();
+		for($x = 0; $x < count($catalogue); $x++) {
+			if($catalogue[$x]["id"] !== $id){
+				array_push($catalogue_new, $catalogue[$x]);
+			}
+		}
+		$catalogue = $catalogue_new;
+		setItem("catalogue", $catalogue);
+	}
+
+	// 删除文件夹
+	function deleteDir($id){
+		$catalogue = getItem("catalogue");
+		$catalogue_new = array();
+		for($x = 0; $x < count($catalogue); $x++) {
+			if($catalogue[$x]["id"] !== $id){
+				array_push($catalogue_new, $catalogue[$x]);
+			}
+		}
+		$catalogue = $catalogue_new;
+		setItem("catalogue", $catalogue);
+
+		for($x = 0; $x < count($catalogue); $x++) {
+			if($catalogue[$x]["parentId"] === $id){
+				$child = $catalogue[$x];
+				if($child["type"] === "file"){
+					deleteFile($child["id"]);
+				}else{
+					deleteDir($child["id"]);
+				}
+			}
+		}
+	}
+
+
 ?>

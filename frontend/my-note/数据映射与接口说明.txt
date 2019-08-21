@@ -36,9 +36,12 @@ code:
 		}
 	}
 
-/Catalogue GET：
+/Catalogue POST：
+	send = {
+		token: "123456789"/null
+	}
 	re = {
-		code: 0
+		code: 0/-2
 		data: ...
 	}
 	
@@ -55,10 +58,11 @@ code:
 	send = {
 
 		token: "0123456789",
-		operation: "addDir"/"addFile"/"rename"/"cut"/"copy"/"delete",
+		operation: "addDir"/"addFile"/"rename"/"cut"/"copy"/"delete"/"changePrivate",
 		id: 0,
 		name: "name",
-		parentId: 0
+		parentId: 0,
+		private: false
 
 		// addDir,addFile
 		name: "newDirOrFile"
@@ -67,6 +71,9 @@ code:
 		// rename
 		id: 3
 		name: "newName"
+
+		// changePrivate
+		id: 3
 
 		// cut, copy
 		id: 3
@@ -83,14 +90,18 @@ code:
 	send = {
 
 		token: "0123456789",
-		operation: "rename"/"cut"/"copy"/"delete",
+		operation: "rename"/"cut"/"copy"/"delete"/"changePrivate",
 		id: 0,
 		name: "name",
-		parentId: 0
+		parentId: 0,
+		private: false
 
 		// rename
 		id: 3
 		name: "newName"
+
+		// changePrivate
+		id: 3
 
 		// cut, copy
 		id: 3
@@ -111,19 +122,22 @@ catalogue：[
 		id: 0,
 		name: "root",
 		type: "dir",
-		parentId: null
+		parentId: null,
+		private: false
 		
 	},{
 		id: 1,
 		name: "note1",
 		type: "file",
-		parentId: 0
+		parentId: 0,
+		private: false
 	}
 ]
 note:
 {	
 	id: 1,
 	name: "note1",
+	private: false,
 	createTime: "...",
 	updateTime: "...",
 	data:[
@@ -137,6 +151,7 @@ content:
 	id: 1,
 	type: "h1"/"h2"/"h3"/"p"/"img"/"code",
 	content: "hello word!"/"1_1_pictureName.png"
+	size: 1000
 }
 
 

@@ -19,26 +19,38 @@
             ></nz-tree>
             <ng-template #nzTreeTemplate let-node>
             <span class="custom-node" [class.active]="activeNode?.key === node.key">
-                <span *ngIf="!node.isLeaf" (contextmenu)="contextMenu($event, dirMenu, node)">
-                <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" (click)="openFolder(node)"></i>
-                <span class="folder-name">{{ node.title }}</span>
+                <span *ngIf="!node.isLeaf" (contextmenu)="contextMenu($event, dirMenu, node)" [class.cutChild]="cutChildId === node.key">
+                    <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" (click)="openFolder(node)"></i>
+                    <span class="folder-name">{{ node.title }}&#160;</span>
+                    <i nz-icon nzType="lock" *ngIf="node.origin['private']"></i>
                 </span>
-                <span *ngIf="node.isLeaf" (contextmenu)="contextMenu($event, fileMenu, node)">
-                <i nz-icon nzType="file"></i>
-                <span class="file-name">{{ node.title }}</span>
+                <span *ngIf="node.isLeaf" (contextmenu)="contextMenu($event, fileMenu, node)" [class.cutChild]="cutChildId === node.key">
+                    <i nz-icon nzType="file"></i>
+                    <span class="file-name">{{ node.title }}&#160;</span>
+                    <i nz-icon nzType="lock" *ngIf="node.origin['private']"></i>
                 </span>
             </span>
             </ng-template>
             <nz-dropdown-menu #dirMenu="nzDropdownMenu">
                 <ul nz-menu>
                     <li nz-menu-item (click)="newDir()">新建文件夹</li>
-                    <li nz-menu-item (click)="newFile()">新建文件</li>
+                    <li nz-menu-item (click)="newFile()">新建文件</li>   
+                    <li nz-menu-item (click)="getCatalogue()">刷新</li>            
                     <li nz-menu-item (click)="dirRename()">重命名</li>
+                    <li nz-menu-item (click)="cutFrom()">剪切</li>
+                    <li nz-menu-item (click)="cutTo()" *ngIf="cutChildId !== null">粘贴</li>
+                    <li nz-menu-item *ngIf="cutChildId === null" style="color:#bbb">粘贴</li>
+                    <li nz-menu-item (click)="dirChangePrivate()">隐藏/公开</li>
+                    <li nz-menu-item (click)="dirDelete()">删除</li>
                 </ul>
             </nz-dropdown-menu>
             <nz-dropdown-menu #fileMenu="nzDropdownMenu">
                 <ul nz-menu>
                     <li nz-menu-item (click)="fileRename()">重命名</li>
+                    <li nz-menu-item (click)="getCatalogue()">刷新</li>   
+                    <li nz-menu-item (click)="cutFrom()">剪切</li>
+                    <li nz-menu-item (click)="fileChangePrivate()">隐藏/公开</li>
+                    <li nz-menu-item (click)="fileDelete()">删除</li>
                 </ul>
             </nz-dropdown-menu>
         </div>
@@ -128,6 +140,26 @@
             <input nz-input maxlength=50 style="width: 100%;" placeholder="请输入标题" [(ngModel)]="fileRenameNewName" />
         </div>
     </div>
+</nz-modal>
+
+<nz-modal
+    [(nzVisible)]="ifShowFileDeleteModal"
+    nzTitle="删除文件"
+    (nzOnCancel)="fileDeleteCancel()"
+    (nzOnOk)="fileDeleteOk()"
+    [nzOkLoading]="fileDeleteWaiting"
+>
+    <p>是否删除文件？</p>
+</nz-modal>
+
+<nz-modal
+    [(nzVisible)]="ifShowDirDeleteModal"
+    nzTitle="删除文件夹"
+    (nzOnCancel)="dirDeleteCancel()"
+    (nzOnOk)="dirDeleteOk()"
+    [nzOkLoading]="dirDeleteWaiting"
+>
+    <p>是否删除文件夹（文件夹下的文件将一并删除）？</p>
 </nz-modal>
 
 
