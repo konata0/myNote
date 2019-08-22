@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { LOCAL_STORAGE, SESSION_STORAGE, WebStorageService} from 'angular-webstorage-service';
 
+import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd';
 import { NzFormatEmitEvent, NzTreeNode } from 'ng-zorro-antd/core';
@@ -20,9 +21,14 @@ export class NoteComponent implements OnInit {
   note: any = null;
   noteInit: boolean = false;
 
+  editMode: boolean = false;
+  ifShowEditOffModal: boolean = false;
+  editId: number = null;
+
   constructor(
     private route: ActivatedRoute,
     private commonService: CommonService,
+    private passSecurity: DomSanitizer,
     @Inject(LOCAL_STORAGE) private localStorage: WebStorageService,
     @Inject(SESSION_STORAGE) private sessionStorage: WebStorageService,
   ) { }
@@ -51,7 +57,10 @@ export class NoteComponent implements OnInit {
   notePretreat(){
     this.noteInit = false;
     (<Array<any>>this.note["data"]).forEach(item => {
-
+      let server: string = "http://127.0.0.1:80/php/note/img/";
+      if(item["type"] === "img"){
+        item["safeURL"] = this.passSecurity.bypassSecurityTrustResourceUrl(server + item["content"]);
+      }
     });
     this.noteInit = true;
   }
@@ -66,6 +75,32 @@ export class NoteComponent implements OnInit {
     for(let i = 0; i <= (<Array<any>>this.note["data"]).length - 1; i++){
       (<Array<any>>this.note["data"])[i]["id"] = i;
     }
+  }
+
+  // 编辑模式
+  editOn(){
+    this.editId = null;
+    this.editMode = true;
+  }
+  editOff(){
+    this.ifShowEditOffModal = true;
+  }
+  editOffCancel(){
+    this.ifShowEditOffModal = false;
+  }
+  editOffOk(){
+    this.ifShowEditOffModal = false;
+    this.editId = null;
+    this.editMode = false;
+    this.getNote();
+  }
+  editSave(){
+    
+  }
+
+  // 编辑操作
+  setEditId(id: number){
+    this.editId = id;
   }
 
 }

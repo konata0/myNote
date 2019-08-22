@@ -14,26 +14,59 @@
     <div class="time">
         编辑：{{note["updateTime"]}}
     </div>
+    <br />
+    <div class="edit-icon" *ngIf="token">
+        <i nz-icon [nzType]="'edit'" (click)="editOn()" *ngIf="!editMode"></i>
+        <i nz-icon [nzType]="'save'" (click)="editSave()" *ngIf="editMode"></i>
+        <i nz-icon [nzType]="'close'" (click)="editOff()" *ngIf="editMode"></i>
+    </div>
     <br/>
     <br/>
 
     <div *ngFor="let item of note['data']">
+
         <div class="h1-type" *ngIf="item['type'] === 'h1'">
-            <b>{{item['content']}}</b>
+            <div *ngIf="!editMode" class="normal">
+                <b>{{item['content']}}</b>   
+            </div>
+            <div *ngIf="editMode&&(item['id'] !== editId)" class="editMode">
+                <b>{{item['content']}}</b>
+                <i nz-icon [nzType]="'edit'" (click)="setEditId(item['id'])"></i>    
+            </div>
+            <div *ngIf="editMode&&(item['id'] === editId)" class="editing">
+                <input nz-input maxlength=50 style="width: 250px;" [(ngModel)]="item['content']"/>
+                <i nz-icon [nzType]="'check'" (click)="setEditId(null)"></i>   
+            </div>  
         </div>
+
         <div class="h2-type" *ngIf="item['type'] === 'h2'">
-            <b>{{item['content']}}</b>
+            <div *ngIf="!editMode">
+                <b>{{item['content']}}</b>
+            </div>
+            
         </div>
         <div class="h3-type" *ngIf="item['type'] === 'h3'">
-            <b>{{item['content']}}</b>
+            <div *ngIf="!editMode">
+                <b>{{item['content']}}</b>
+            </div>
+
         </div>
         <div class="p-type" *ngIf="item['type'] === 'p'">
-            {{item['content']}}
+            <div *ngIf="!editMode">
+                {{item['content']}}
+            </div>
+
         </div>
         <div class="img-type" *ngIf="item['type'] === 'img'">
+            <div *ngIf="!editMode">
+                <img [src]="item['safeURL']" [width]="item['size']">
+            </div>
 
         </div>
         <div class="code-type" *ngIf="item['type'] === 'code'">
+            <div *ngIf="!editMode">
+                <b>{{item['content']}}</b>
+            </div>
 
         </div>
                  
@@ -41,3 +74,12 @@
 
     
 </div>
+
+<nz-modal
+    [(nzVisible)]="ifShowEditOffModal"
+    nzTitle="取消编辑"
+    (nzOnCancel)="editOffCancel()"
+    (nzOnOk)="editOffOk()"
+>
+    <p>是否取消编辑？（修改内容将不会保存）</p>
+</nz-modal>
