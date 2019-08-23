@@ -100,8 +100,10 @@ code-color = rgb(170, 230, 255)
         margin 5px 45px 
         .normal
             padding 2px 7px
+            white-space pre-wrap
         .editMode
             padding 0 5px
+            white-space pre-wrap
             border 2px solid
             border-radius 10px;
             border-color transparent
@@ -110,12 +112,14 @@ code-color = rgb(170, 230, 255)
                 box-shadow 0px 0px 5px my-blue
         .rightClick
             padding 0 5px
+            white-space pre-wrap
             border 2px solid
             border-radius 10px;
             border-color my-blue
             box-shadow 0px 0px 5px my-blue
         .editing
             padding 20px
+            white-space pre-wrap
             i
                 float right
                 margin 10px
@@ -130,6 +134,7 @@ code-color = rgb(170, 230, 255)
             border 2px solid
             border-radius: 10px;
             border-color transparent
+            white-space pre
         .editMode
             padding 0px 80px
             background-color code-background
@@ -137,6 +142,7 @@ code-color = rgb(170, 230, 255)
             border 2px solid
             border-radius: 10px;
             border-color transparent
+            white-space pre
             &:hover, :active
                 border-color my-blue
                 box-shadow 0px 0px 5px my-blue
@@ -148,6 +154,7 @@ code-color = rgb(170, 230, 255)
             border-radius: 10px;
             border-color my-blue
             box-shadow 0px 0px 5px my-blue
+            white-space pre
         .editing
             padding 20px
             i
@@ -155,15 +162,28 @@ code-color = rgb(170, 230, 255)
                 margin 10px
 
 
-    .code-type
-
-        
-
-
-
     .img-type
         text-align center
         margin 5px 0
+        .normal
+            border 2px solid
+            border-color transparent
+        .editMode
+            border 2px solid
+            border-color transparent
+            &:hover, :active
+                border-color my-blue
+                box-shadow 0px 0px 5px my-blue
+        .rightClick
+            border 2px solid
+            border-color my-blue
+            box-shadow 0px 0px 5px my-blue
+        .editing
+            padding 20px
+            i
+                float right
+                margin 10px
+        
     
 
 i

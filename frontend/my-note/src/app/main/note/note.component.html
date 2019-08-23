@@ -107,14 +107,25 @@
             </div>  
         </div>
 
-
-
         <div class="img-type" *ngIf="item['type'] === 'img'">
-            <div *ngIf="!editMode">
+            <div *ngIf="!editMode" class="normal">
                 <img [src]="item['safeURL']" [width]="item['size']">
             </div>
+            <div
+                *ngIf="editMode&&(item['id'] !== editId)"
+                [class]="item['id'] === rightClickId?'rightClick':'editMode'"
+                (contextmenu)="contextMenu($event, menu, item['id'])">
+                <img [src]="item['safeURL']" [width]="item['size']">
+            </div>
+            <div *ngIf="editMode&&(item['id'] === editId)" class="editing">
 
+
+                <i nz-icon [nzType]="'check'" (click)="setEditId(null)"></i>   
+            </div>  
         </div>
+
+
+
 
 
 
