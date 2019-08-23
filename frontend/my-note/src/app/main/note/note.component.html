@@ -25,13 +25,16 @@
 
     <div *ngFor="let item of note['data']">
 
+
         <div class="h1-type" *ngIf="item['type'] === 'h1'">
             <div *ngIf="!editMode" class="normal">
                 <b>{{item['content']}}</b>   
             </div>
-            <div *ngIf="editMode&&(item['id'] !== editId)" class="editMode">
+            <div
+                *ngIf="editMode&&(item['id'] !== editId)"
+                [class]="item['id'] === rightClickId?'rightClick':'editMode'"
+                (contextmenu)="contextMenu($event, menu, item['id'])">
                 <b>{{item['content']}}</b>
-                <i nz-icon [nzType]="'edit'" (click)="setEditId(item['id'])"></i>    
             </div>
             <div *ngIf="editMode&&(item['id'] === editId)" class="editing">
                 <input nz-input maxlength=50 style="width: 250px;" [(ngModel)]="item['content']"/>
@@ -39,41 +42,117 @@
             </div>  
         </div>
 
-        <div class="h2-type" *ngIf="item['type'] === 'h2'">
-            <div *ngIf="!editMode">
-                <b>{{item['content']}}</b>
-            </div>
-            
-        </div>
-        <div class="h3-type" *ngIf="item['type'] === 'h3'">
-            <div *ngIf="!editMode">
-                <b>{{item['content']}}</b>
-            </div>
 
+        <div class="h2-type" *ngIf="item['type'] === 'h2'">
+            <div *ngIf="!editMode" class="normal">
+                <b>{{item['content']}}</b>   
+            </div>
+            <div
+                *ngIf="editMode&&(item['id'] !== editId)"
+                [class]="item['id'] === rightClickId?'rightClick':'editMode'"
+                (contextmenu)="contextMenu($event, menu, item['id'])">
+                <b>{{item['content']}}</b>
+            </div>
+            <div *ngIf="editMode&&(item['id'] === editId)" class="editing">
+                <input nz-input maxlength=50 style="width: 250px;" [(ngModel)]="item['content']"/>
+                <i nz-icon [nzType]="'check'" (click)="setEditId(null)"></i>   
+            </div>  
         </div>
+
+        <div class="h3-type" *ngIf="item['type'] === 'h3'">
+            <div *ngIf="!editMode" class="normal">
+                <b>{{item['content']}}</b>   
+            </div>
+            <div
+                *ngIf="editMode&&(item['id'] !== editId)"
+                [class]="item['id'] === rightClickId?'rightClick':'editMode'"
+                (contextmenu)="contextMenu($event, menu, item['id'])">
+                <b>{{item['content']}}</b>
+            </div>
+            <div *ngIf="editMode&&(item['id'] === editId)" class="editing">
+                <input nz-input maxlength=50 style="width: 250px;" [(ngModel)]="item['content']"/>
+                <i nz-icon [nzType]="'check'" (click)="setEditId(null)"></i>   
+            </div>  
+        </div>
+
         <div class="p-type" *ngIf="item['type'] === 'p'">
-            <div *ngIf="!editMode">
+            <div *ngIf="!editMode" class="normal">
                 {{item['content']}}
             </div>
-
+            <div
+                *ngIf="editMode&&(item['id'] !== editId)"
+                [class]="item['id'] === rightClickId?'rightClick':'editMode'"
+                (contextmenu)="contextMenu($event, menu, item['id'])">
+                {{item['content']}}
+            </div>
+            <div *ngIf="editMode&&(item['id'] === editId)" class="editing">
+                <textarea rows="10" nz-input [(ngModel)]="item['content']"></textarea>
+                <i nz-icon [nzType]="'check'" (click)="setEditId(null)"></i>   
+            </div>  
         </div>
+
+        <div class="code-type" *ngIf="item['type'] === 'code'">
+            <div *ngIf="!editMode" class="normal">
+                <b>{{item['content']}}</b>
+            </div>
+            <div
+                *ngIf="editMode&&(item['id'] !== editId)"
+                [class]="item['id'] === rightClickId?'rightClick':'editMode'"
+                (contextmenu)="contextMenu($event, menu, item['id'])">
+                <b>{{item['content']}}</b>
+            </div>
+            <div *ngIf="editMode&&(item['id'] === editId)" class="editing">
+                <textarea rows="10" nz-input [(ngModel)]="item['content']"></textarea>
+                <i nz-icon [nzType]="'check'" (click)="setEditId(null)"></i>   
+            </div>  
+        </div>
+
+
+
         <div class="img-type" *ngIf="item['type'] === 'img'">
             <div *ngIf="!editMode">
                 <img [src]="item['safeURL']" [width]="item['size']">
             </div>
 
         </div>
-        <div class="code-type" *ngIf="item['type'] === 'code'">
-            <div *ngIf="!editMode">
-                <b>{{item['content']}}</b>
-            </div>
 
-        </div>
+
+
+
+        
                  
     </div>
 
     
 </div>
+
+<nz-dropdown-menu #menu="nzDropdownMenu">
+    <ul nz-menu>
+        <li nz-menu-item (click)="setEditId(-1)">编辑</li>
+        <li nz-submenu nzTitle="向前添加">
+            <ul>
+                <li nz-menu-item (click)="addItem(-0.5, 'h1')">标题1</li>
+                <li nz-menu-item (click)="addItem(-0.5, 'h2')">标题2</li>
+                <li nz-menu-item (click)="addItem(-0.5, 'h3')">标题3</li>
+                <li nz-menu-item (click)="addItem(-0.5, 'p')">段落</li>
+                <li nz-menu-item (click)="addItem(-0.5, 'img')">图片</li>
+                <li nz-menu-item (click)="addItem(-0.5, 'code')">代码</li>
+            </ul>
+        </li>
+        <li nz-submenu nzTitle="向后添加">
+            <ul>
+                <li nz-menu-item (click)="addItem(0.5, 'h1')">标题1</li>
+                <li nz-menu-item (click)="addItem(0.5, 'h2')">标题2</li>
+                <li nz-menu-item (click)="addItem(0.5, 'h3')">标题3</li>
+                <li nz-menu-item (click)="addItem(0.5, 'p')">段落</li>
+                <li nz-menu-item (click)="addItem(0.5, 'img')">图片</li>
+                <li nz-menu-item (click)="addItem(0.5, 'code')">代码</li>
+            </ul>
+        </li>
+        <li nz-menu-item (click)="deleteItem()">删除</li>
+        <li nz-menu-item (click)="setEditId(null)">取消</li>
+    </ul>
+</nz-dropdown-menu>
 
 <nz-modal
     [(nzVisible)]="ifShowEditOffModal"
