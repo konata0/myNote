@@ -125,6 +125,28 @@ code:
 		content: "123.png"
 	}
 
+/DeletePictures POST:
+	send = {
+		token: "0123456789",
+		pictureList: [
+			"123.png",
+			"456.png"
+		]
+	}
+	re = {
+		code: 0/-2
+	}
+
+/SaveNote POST:
+	send = {
+		token: "0123456789",
+		note: note
+	}
+	re = {
+		code: 0/-2
+	}
+
+
 	
 	
 数据格式：

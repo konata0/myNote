@@ -211,6 +211,30 @@ export class CommonService {
       catchError(this.handleError('uploadPicture', data))
     );
   }
+
+  // 删除图片
+  deletePictures(token0: string, pictureList0: string[]){
+    let data = {
+      token: token0,
+      pictureList: pictureList0
+    }
+    return this.http.post(this.server + "/DeletePictures.php", data)
+    .pipe(
+      catchError(this.handleError('deletePictures', data))
+    );
+  }
+
+  // 保存笔记
+  saveNote(token0: string, note0: any){
+    let data = {
+      token: token0,
+      note: note0
+    }
+    return this.http.post(this.server + "/SaveNote.php", data)
+    .pipe(
+      catchError(this.handleError('deletePictures', data))
+    );
+  }
   
 
   // 请求异常的处理

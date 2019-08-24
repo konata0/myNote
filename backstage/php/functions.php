@@ -86,7 +86,10 @@
 
 	// 删除图片
 	function deletePicture($picture_name){
-		unlink("./note/img/".$picture_name);
+		$picture_path = "./note/img/".$picture_name;
+		if(file_exists($picture_path)){
+			unlink($picture_path);
+		}	
 	}
 
 	// 删除文件

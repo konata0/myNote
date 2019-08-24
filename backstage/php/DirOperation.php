@@ -59,13 +59,19 @@
 		);
 		array_push($catalogue, $newFileRecord);
 		setItem("catalogue", $catalogue);
+		$newItem = array(
+			"id" => 0,
+			"type" => "",
+			"content" => "this is a new file!",
+			"size" => 1
+		);
 		$newFile = array(
 			"id" => $newId,
 			"name" => $name,
 			"private" => true,
 			"createTime" => date("Y-m-d H:i:s",time()),
 			"updateTime" => date("Y-m-d H:i:s",time()),
-			"data" => array()
+			"data" => array($newItem)
 		);
 		setNote($newFile);
 		returnJson($re_success);

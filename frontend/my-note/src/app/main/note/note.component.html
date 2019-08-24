@@ -24,9 +24,11 @@
     <br/>
 
     <div *ngFor="let item of note['data']">
-
-
+        
         <div class="h1-type" *ngIf="item['type'] === 'h1'">
+
+            <div class="id-number" *ngIf="editMode&&(item['id'] !== editId)">{{item['id']}}</div>
+
             <div *ngIf="!editMode" class="normal">
                 <b>{{item['content']}}</b>   
             </div>
@@ -35,6 +37,7 @@
                 [class]="item['id'] === rightClickId?'rightClick':'editMode'"
                 (contextmenu)="contextMenu($event, menu, item['id'])">
                 <b>{{item['content']}}</b>
+                
             </div>
             <div *ngIf="editMode&&(item['id'] === editId)" class="editing">
                 <input nz-input maxlength=50 style="width: 250px;" [(ngModel)]="item['content']"/>
@@ -44,6 +47,9 @@
 
 
         <div class="h2-type" *ngIf="item['type'] === 'h2'">
+
+            <div class="id-number" *ngIf="editMode&&(item['id'] !== editId)">{{item['id']}}</div>
+
             <div *ngIf="!editMode" class="normal">
                 <b>{{item['content']}}</b>   
             </div>
@@ -60,6 +66,9 @@
         </div>
 
         <div class="h3-type" *ngIf="item['type'] === 'h3'">
+
+            <div class="id-number" *ngIf="editMode&&(item['id'] !== editId)">{{item['id']}}</div>
+
             <div *ngIf="!editMode" class="normal">
                 <b>{{item['content']}}</b>   
             </div>
@@ -76,6 +85,9 @@
         </div>
 
         <div class="p-type" *ngIf="item['type'] === 'p'">
+
+            <div class="id-number" *ngIf="editMode&&(item['id'] !== editId)">{{item['id']}}</div>
+
             <div *ngIf="!editMode" class="normal">
                 {{item['content']}}
             </div>
@@ -92,6 +104,9 @@
         </div>
 
         <div class="code-type" *ngIf="item['type'] === 'code'">
+
+            <div class="id-number" *ngIf="editMode&&(item['id'] !== editId)">{{item['id']}}</div>
+
             <div *ngIf="!editMode" class="normal">
                 <b>{{item['content']}}</b>
             </div>
@@ -108,6 +123,9 @@
         </div>
 
         <div class="img-type" *ngIf="item['type'] === 'img'">
+
+            <div class="id-number" *ngIf="editMode&&(item['id'] !== editId)">{{item['id']}}</div>
+
             <div *ngIf="!editMode" class="normal">
                 <img [src]="item['safeURL']" [width]="item['size']">
             </div>
@@ -171,6 +189,7 @@
                 <li nz-menu-item (click)="addItem(0.5, 'code')">代码</li>
             </ul>
         </li>
+        <li nz-menu-item (click)="setId()">移动</li>
         <li nz-menu-item (click)="deleteItem()">删除</li>
         <li nz-menu-item (click)="setEditId(null)">取消</li>
     </ul>
@@ -181,6 +200,33 @@
     nzTitle="取消编辑"
     (nzOnCancel)="editOffCancel()"
     (nzOnOk)="editOffOk()"
+    [nzOkLoading]="editOffWaiting"    
 >
     <p>是否取消编辑？（修改内容将不会保存）</p>
+</nz-modal>
+
+<nz-modal
+    [(nzVisible)]="ifShowSaveModal"
+    nzTitle="保存确认"
+    (nzOnCancel)="saveCancel()"
+    (nzOnOk)="saveOk()"
+    [nzOkLoading]="saveWaiting"    
+>
+    <p>是否取消编辑？（修改内容将不会保存）</p>
+</nz-modal>
+
+<nz-modal
+    [(nzVisible)]="ifShowSetIdModal"
+    nzTitle="修改位置"
+    (nzOnCancel)="setIdCancel()"
+    (nzOnOk)="setIdOk()"
+>
+    <div nz-row nzAlign="middle" class="itemLine">
+        <div nz-col [nzSpan]="8" style="text-align: right">
+            <b>顺序编号：</b>      
+        </div>
+        <div nz-col [nzSpan]="15" [nzOffset]="1" >
+            <nz-input-number [(ngModel)]="setIdNewId" [nzMin]="-10000" [nzMax]="10000" style="width: 200px;"></nz-input-number>
+        </div>
+    </div>
 </nz-modal>

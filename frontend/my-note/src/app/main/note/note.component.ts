@@ -12,7 +12,7 @@ import { UploadXHRArgs } from 'ng-zorro-antd';
 
 
 import { CommonService } from '../../service/common.service';
-import { format } from 'util';
+import { format } from 'date-fns';
 
 @Component({
   selector: 'app-note',
@@ -29,8 +29,14 @@ export class NoteComponent implements OnInit {
 
   editMode: boolean = false;
   ifShowEditOffModal: boolean = false;
+  ifShowSaveModal: boolean = false;
   editId: number = null;
   rightClickId: number = null;
+  editOffWaiting: boolean = false;
+  saveWaiting: boolean = false;
+
+  ifShowSetIdModal: boolean = false;
+  setIdNewId: number = null;
 
   uploadByFileWaiting: boolean = false;
   deletePictureList: string[] = [];
@@ -107,14 +113,54 @@ export class NoteComponent implements OnInit {
     this.ifShowEditOffModal = false;
   }
   editOffOk(){
-    this.ifShowEditOffModal = false;
-    this.editId = null;
-    this.rightClickId = null;
-    this.editMode = false;
-    this.getNote();
+    this.editOffWaiting = true;
+    this.commonService.deletePictures(this.token, this.addPictureList).subscribe(re => {
+      if(re["code"] === 0){
+        this.ifShowEditOffModal = false;
+        this.editId = null;
+        this.rightClickId = null;
+        this.editMode = false;
+        this.getNote();
+        this.addPictureList = [];
+        this.deletePictureList = [];
+        this.editOffWaiting = false;
+      }else{
+        this.editOffWaiting = false;
+        this.commonService.wrongCode(re, "deletePictures");
+      }
+    });
   }
   editSave(){
-    
+    this.ifShowSaveModal = true;
+  }
+  saveCancel(){
+    this.ifShowSaveModal = false;
+  }
+  saveOk(){
+    this.saveWaiting = true;
+    this.commonService.deletePictures(this.token, this.deletePictureList).subscribe(re => {
+      if(re["code"] === 0){
+        this.note["updateTime"] = format(new Date(), "YYYY-MM-DD HH:mm:ss");
+        this.commonService.saveNote(this.token, this.note).subscribe(re0 => {
+          if(re0["code"] === 0){
+            this.ifShowSaveModal = false;
+            this.saveWaiting = false;    
+            this.editId = null;
+            this.rightClickId = null;
+            this.editMode = false;
+            this.getNote();
+            this.addPictureList = [];
+            this.deletePictureList = [];
+          }else{
+            this.saveWaiting = false;
+            this.commonService.wrongCode(re0, "saveNote");
+          }
+        });
+      }else{
+        this.saveWaiting = false;
+        this.commonService.wrongCode(re, "deletePictures");
+      }
+    });
   }
 
   // 添加操作
@@ -131,7 +177,7 @@ export class NoteComponent implements OnInit {
       id: newId,
 	    type: type0,
 	    content: null,
-	    size: 0
+	    size: type0==="img"?100:0
     };
     (<Array<any>>this.note["data"]).push(newItem);
     newId = this.dataSort(newId);
@@ -149,8 +195,32 @@ export class NoteComponent implements OnInit {
       this.editId = id;
     }
   }
+  // 修改Id（顺序）
+  setId(){
+    this.setIdNewId = null;
+    this.ifShowSetIdModal = true;
+  }
+  setIdCancel(){
+    this.ifShowSetIdModal = false;
+    this.setIdNewId = null;
+    this.rightClickId = null;
+    this.editId = null
+  }
+  setIdOk(){
+    if(this.setIdNewId === null || this.setIdNewId.toString() === ""){
+      this.message.create("error", "请输入合适的数值！");
+      return;
+    }
+    (<Array<any>>this.note["data"])[this.rightClickId]["id"] = this.setIdNewId;
+    this.setIdCancel();
+    this.dataSort(-1);
+  }
   // 删除
   deleteItem(){
+    if((<Array<any>>this.note["data"]).length <= 1){
+      this.message.create("error", "文件必须包含一定内容！");
+      return false;
+    }
     if((<Array<any>>this.note["data"])[this.rightClickId]["type"] === "img"){
       if((<Array<any>>this.note["data"])[this.rightClickId]["content"]){
         this.deletePictureList.push((<Array<any>>this.note["data"])[this.rightClickId]["content"]);
