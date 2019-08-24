@@ -118,9 +118,20 @@
                 <img [src]="item['safeURL']" [width]="item['size']">
             </div>
             <div *ngIf="editMode&&(item['id'] === editId)" class="editing">
+                <img *ngIf="item['content']" [src]="item['safeURL']" [width]="item['size']"><br />
+                <div class="left-side">
+                    <button nz-button nzType="primary">上传复制图片</button>
 
 
-                <i nz-icon [nzType]="'check'" (click)="setEditId(null)"></i>   
+                    <nz-upload [nzBeforeUpload]="uploadByFile">
+                        <button nz-button nzType="primary" [nzLoading]="uploadByFileWaiting">上传图片文件</button>  
+                    </nz-upload>
+                </div>
+                <div class="right-side">
+                    图片宽度
+                    <nz-input-number [(ngModel)]="item['size']" [nzMin]="10" [nzMax]="10000" [nzStep]="10"></nz-input-number>
+                    <i nz-icon class="check-icon" [nzType]="'check'" (click)="setEditId(null)"></i>
+                </div>              
             </div>  
         </div>
 

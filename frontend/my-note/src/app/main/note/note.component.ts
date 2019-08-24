@@ -4,10 +4,15 @@ import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dro
 
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService, UploadFile } from 'ng-zorro-antd';
 import { NzFormatEmitEvent, NzTreeNode } from 'ng-zorro-antd/core';
 
+import { HttpClient, HttpEvent, HttpEventType, HttpRequest, HttpResponse } from '@angular/common/http';
+import { UploadXHRArgs } from 'ng-zorro-antd';
+
+
 import { CommonService } from '../../service/common.service';
+import { format } from 'util';
 
 @Component({
   selector: 'app-note',
@@ -27,11 +32,16 @@ export class NoteComponent implements OnInit {
   editId: number = null;
   rightClickId: number = null;
 
+  uploadByFileWaiting: boolean = false;
+  deletePictureList: string[] = [];
+  addPictureList: string[] = [];
+
   constructor(
     private route: ActivatedRoute,
     private commonService: CommonService,
     private passSecurity: DomSanitizer,
     private nzContextMenuService: NzContextMenuService,
+    private message: NzMessageService,
     @Inject(LOCAL_STORAGE) private localStorage: WebStorageService,
     @Inject(SESSION_STORAGE) private sessionStorage: WebStorageService,
   ) { }
@@ -141,8 +151,55 @@ export class NoteComponent implements OnInit {
   }
   // 删除
   deleteItem(){
+    if((<Array<any>>this.note["data"])[this.rightClickId]["type"] === "img"){
+      if((<Array<any>>this.note["data"])[this.rightClickId]["content"]){
+        this.deletePictureList.push((<Array<any>>this.note["data"])[this.rightClickId]["content"]);
+      }
+    }
     (<Array<any>>this.note["data"]).splice(this.rightClickId, 1);
+    this.dataSort(-1);
     this.rightClickId = null;
     this.editId = null;
   }
+
+  // 上传图片
+  uploadByFile = (file: UploadFile): boolean => {
+    let gifFlag: boolean = !(file.name.lastIndexOf(".gif") <= 0 || file.name.lastIndexOf(".gif") != file.name.length - 4);
+    let pngFlag: boolean = !(file.name.lastIndexOf(".png") <= 0 || file.name.lastIndexOf(".png") != file.name.length - 4);
+    let bmpFlag: boolean = !(file.name.lastIndexOf(".bmp") <= 0 || file.name.lastIndexOf(".bmp") != file.name.length - 4);
+    let jpgFlag: boolean = !(file.name.lastIndexOf(".jpg") <= 0 || file.name.lastIndexOf(".jpg") != file.name.length - 4);
+    let jpegFlag: boolean = !(file.name.lastIndexOf(".jpeg") <= 0 || file.name.lastIndexOf(".jpeg") != file.name.length - 5);
+    if(!(gifFlag || pngFlag || bmpFlag || jpgFlag || jpegFlag)){
+      this.message.create("error", "请选择正确格式的图片！（gif/png/bmp/jpg/jpeg）");
+      return false;
+    }
+    if(file.size > 30 * 1024 *1024){
+      this.message.create("error", "文件过大（30MB）！");
+      return false;
+    }
+
+
+    this.uploadByFileWaiting = true;
+
+    const formData = new FormData();
+    formData.append("token", this.token);
+    formData.append("picture", <any>file);
+
+    this.commonService.uploadPicture(formData).subscribe(re => {
+      if(re["code"] === 0){
+        this.uploadByFileWaiting = false;
+        this.addPictureList.push(re["content"]);
+        if((<Array<any>>this.note["data"])[this.editId]["content"]){
+          this.deletePictureList.push((<Array<any>>this.note["data"])[this.editId]["content"]);
+        }
+        (<Array<any>>this.note["data"])[this.editId]["content"] = re["content"];
+        this.notePretreat();
+      }else{
+        this.uploadByFileWaiting = false;
+        this.commonService.wrongCode(re, "uploadByFile");
+      }
+    });
+    return false;
+  };
+
 }

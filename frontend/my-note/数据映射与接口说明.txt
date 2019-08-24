@@ -115,6 +115,16 @@ code:
 		code: 0/-2/-3/-5
 	}
 
+/UploadPicture POST:
+	FormData = {
+		token: "0123456789",
+		picture: file
+	}
+	re = {
+		code: 0/-2
+		content: "123.png"
+	}
+
 	
 	
 数据格式：
