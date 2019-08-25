@@ -1,1 +1,49 @@
-<p>setting works!</p>
+<div style="text-align: center; margin: 150px;" *ngIf="!configInit">
+    <nz-spin nzSimple nzSize="large"></nz-spin>
+</div>
+
+<div class="setting-page" *ngIf="configInit">
+
+    <div nz-row class="setting-item">
+        <div nz-col [nzSpan]="10" class="setting-item-left">
+            <b>网页标题：</b>
+        </div>
+        <div nz-col [nzSpan]="13" [nzOffset]="1" class="setting-item-right">
+            <input nz-input maxlength=50 style="width: 250px; height: 35px;" [(ngModel)]="config['title']"/>
+        </div>
+    </div>
+    <div nz-row class="button-row">
+        <button nz-button nzType="primary" [nzLoading]="configWaiting" (click)="configSave()">保存</button>
+    </div>
+
+    <nz-divider></nz-divider>
+
+    <div nz-row class="setting-item">
+        <div nz-col [nzSpan]="10" class="setting-item-left">
+            <b>修改密码：</b>
+        </div>
+        <div nz-col [nzSpan]="13" [nzOffset]="1" class="setting-item-right">
+            <input nz-input [type]="'password'" maxlength=16 style="width: 250px; height: 35px;" [(ngModel)]="password"/>
+        </div>
+    </div>
+    <div nz-row class="setting-item">
+        <div nz-col [nzSpan]="10" class="setting-item-left">
+            <b>再次输入：</b>
+        </div>
+        <div nz-col [nzSpan]="13" [nzOffset]="1" class="setting-item-right">
+            <input nz-input [type]="'password'" maxlength=16 style="width: 250px; height: 35px;" [(ngModel)]="passwordAgain"/>
+        </div>
+    </div>
+    <div nz-row class="button-row">
+        <button nz-button nzType="primary" [nzLoading]="paswordWaiting" (click)="passwordSave()">保存</button>
+    </div>
+
+    <nz-divider></nz-divider>
+
+    <div nz-row class="button-row">
+        <button nz-button nzType="primary">清理冗余文章和图片数据</button>
+    </div>
+
+
+
+</div>

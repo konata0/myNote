@@ -69,6 +69,9 @@
         <div class="main-header-right">
             <a nz-col [nzSpan]="1" (click)="logout()"><i nz-icon [nzType]="'logout'"></i></a>
         </div>
+        <div class="main-header-right">
+            <a nz-col [nzSpan]="1" [routerLink]="['/main/setting']" *ngIf="token"><i nz-icon [nzType]="'setting'"></i></a>
+        </div>
     </div>
 
 

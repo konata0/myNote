@@ -19,7 +19,6 @@ const routes: Routes = [
     component: MainComponent,
     children: [
       { path: '', component: DashboardComponent },
-      //{ path: 'note', component: DashboardComponent },
       { path: 'note', component: NoteComponent },
       { path: 'setting', component: SettingComponent },
     ]

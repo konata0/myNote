@@ -146,6 +146,15 @@ code:
 		code: 0/-2
 	}
 
+/SaveConfig POST
+	send = {
+		token: "0123456789",
+		config: config
+	}
+	re = {
+		code: 0/-2
+	}
+
 
 	
 	

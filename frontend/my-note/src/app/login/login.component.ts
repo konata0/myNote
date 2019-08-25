@@ -60,6 +60,9 @@ export class LoginComponent implements OnInit {
   }
   login(){
     this.setLoginData();
+    if(this.password){
+      this.password = this.commonService.md5(this.password);
+    }
     let data = {
       password: this.password
     }
@@ -68,6 +71,7 @@ export class LoginComponent implements OnInit {
         this.message.create("error", "密码错误！");
         this.adminLoginWaiting = false;
         this.visitorLoginWaiting = false;
+        this.password = null;
       }else if(re["code"] === 0){
         this.sessionStorage.set("myNoteToken", re["data"]["token"]);
         this.sessionStorage.set("myNoteIfLogin", true);

@@ -235,6 +235,30 @@ export class CommonService {
       catchError(this.handleError('deletePictures', data))
     );
   }
+
+  // 保存设置
+  saveConfig(token0: string, config0: any){
+    let data = {
+      token: token0,
+      config: config0
+    }
+    return this.http.post(this.server + "/SaveConfig.php", data)
+    .pipe(
+      catchError(this.handleError('saveConfig', data))
+    );
+  }
+
+  // 保存密码
+  savePassword(token0: string, password0: any){
+    let data = {
+      token: token0,
+      password: this.md5(password0)
+    }
+    return this.http.post(this.server + "/SavePassword.php", data)
+    .pipe(
+      catchError(this.handleError('savePassword', data))
+    );
+  }
   
 
   // 请求异常的处理
