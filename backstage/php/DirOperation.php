@@ -61,7 +61,7 @@
 		setItem("catalogue", $catalogue);
 		$newItem = array(
 			"id" => 0,
-			"type" => "",
+			"type" => "p",
 			"content" => "this is a new file!",
 			"size" => 1
 		);

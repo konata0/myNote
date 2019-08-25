@@ -48,14 +48,26 @@ export class NoteComponent implements OnInit {
     private passSecurity: DomSanitizer,
     private nzContextMenuService: NzContextMenuService,
     private message: NzMessageService,
+    private router: Router,
     @Inject(LOCAL_STORAGE) private localStorage: WebStorageService,
     @Inject(SESSION_STORAGE) private sessionStorage: WebStorageService,
   ) { }
 
   ngOnInit() {
     this.token = this.sessionStorage.get("myNoteToken");
-    this.noteId = +this.route.snapshot.paramMap.get('id');
-    this.getNote();
+
+    this.route.queryParams.subscribe(params => {
+      if(this.editMode){
+        this.message.create("error", "请先保存编辑！");
+        return;
+      }
+      if(!params["id"]){
+        this.router.navigateByUrl("/main");
+      }else{
+        this.noteId = +params["id"];
+        this.getNote();
+      }   
+    });    
   }
 
   getNote(){

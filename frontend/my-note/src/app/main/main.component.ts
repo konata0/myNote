@@ -224,7 +224,7 @@ export class MainComponent implements OnInit {
   activeNodeChange(data: NzFormatEmitEvent): void {
     this.activeNode = data.node!;
     if(this.activeNode.origin["isLeaf"]){
-      this.router.navigateByUrl("/main/note/" + (<number><any>this.activeNode.origin["key"]).toString());
+      this.router.navigateByUrl("/main/note?id=" + (<number><any>this.activeNode.origin["key"]).toString());
     }
   }
 
