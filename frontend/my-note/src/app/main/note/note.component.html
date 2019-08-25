@@ -24,10 +24,10 @@
     <br/>
 
     <div *ngFor="let item of note['data']">
+
+        <div class="id-number" *ngIf="editMode&&(item['id'] !== editId)">{{item['id']}}</div>
         
         <div class="h1-type" *ngIf="item['type'] === 'h1'">
-
-            <div class="id-number" *ngIf="editMode&&(item['id'] !== editId)">{{item['id']}}</div>
 
             <div *ngIf="!editMode" class="normal">
                 <b>{{item['content']}}</b>   
@@ -48,8 +48,6 @@
 
         <div class="h2-type" *ngIf="item['type'] === 'h2'">
 
-            <div class="id-number" *ngIf="editMode&&(item['id'] !== editId)">{{item['id']}}</div>
-
             <div *ngIf="!editMode" class="normal">
                 <b>{{item['content']}}</b>   
             </div>
@@ -66,8 +64,6 @@
         </div>
 
         <div class="h3-type" *ngIf="item['type'] === 'h3'">
-
-            <div class="id-number" *ngIf="editMode&&(item['id'] !== editId)">{{item['id']}}</div>
 
             <div *ngIf="!editMode" class="normal">
                 <b>{{item['content']}}</b>   
@@ -86,8 +82,6 @@
 
         <div class="p-type" *ngIf="item['type'] === 'p'">
 
-            <div class="id-number" *ngIf="editMode&&(item['id'] !== editId)">{{item['id']}}</div>
-
             <div *ngIf="!editMode" class="normal">
                 {{item['content']}}
             </div>
@@ -105,8 +99,6 @@
 
         <div class="code-type" *ngIf="item['type'] === 'code'">
 
-            <div class="id-number" *ngIf="editMode&&(item['id'] !== editId)">{{item['id']}}</div>
-
             <div *ngIf="!editMode" class="normal">
                 <b>{{item['content']}}</b>
             </div>
@@ -123,8 +115,6 @@
         </div>
 
         <div class="img-type" *ngIf="item['type'] === 'img'">
-
-            <div class="id-number" *ngIf="editMode&&(item['id'] !== editId)">{{item['id']}}</div>
 
             <div *ngIf="!editMode" class="normal">
                 <img [src]="item['safeURL']" [width]="item['size']">
@@ -154,12 +144,6 @@
         </div>
 
 
-
-
-
-
-
-        
                  
     </div>
 
