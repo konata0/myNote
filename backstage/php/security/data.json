@@ -1,1 +1,1 @@
-{"password":"b20427ff5d79b5581371e0c85ec690b1","token":"ffc6ee2f44a5b8894f67d6b8e80c469d","config":{"title":"MyNote"},"catalogue":[{"id":0,"name":"MyNote","type":"dir","parentId":null,"private":false},{"id":5,"name":"文章1","type":"file","parentId":0,"private":false}]}
+{"password":"b20427ff5d79b5581371e0c85ec690b1","token":"d10417a795127b693e59ea0d5cfdab78","config":{"title":"MyNote"},"catalogue":[{"id":0,"name":"MyNote","type":"dir","parentId":null,"private":false},{"id":1,"name":"test","type":"file","parentId":0,"private":true}]}

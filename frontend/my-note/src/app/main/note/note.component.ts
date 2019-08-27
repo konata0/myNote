@@ -38,6 +38,7 @@ export class NoteComponent implements OnInit {
   ifShowSetIdModal: boolean = false;
   setIdNewId: number = null;
 
+  imgFile: any = null;
   uploadByFileWaiting: boolean = false;
   deletePictureList: string[] = [];
   addPictureList: string[] = [];
@@ -68,6 +69,10 @@ export class NoteComponent implements OnInit {
         this.getNote();
       }   
     });    
+
+    document.addEventListener("paste", e => {
+      this.uploadByPaste(e);
+    }, false);
   }
 
   getNote(){
@@ -245,6 +250,37 @@ export class NoteComponent implements OnInit {
   }
 
   // 上传图片
+  uploadByPaste(event: any){
+
+    if(this.editId === null || this.editMode ===  false){
+      return;
+    }
+
+    if((<Array<any>>this.note["data"])[this.editId]["type"] !== "img"){
+      return;
+    }
+
+    let data = event.clipboardData;
+    let img = null;
+    if ( !(data && data.items) ) {
+        return;
+    }
+    for(var i = 0; i < data.items.length; i++) {
+        var item = data.items[i];
+        if(item.kind == "file"){
+            img = item.getAsFile();
+            if (img.size === 0) {
+                return;
+            }
+        }
+    }
+
+    this.imgFile = img;
+
+    this.uploadImgFile();
+
+    return;
+  }
   uploadByFile = (file: UploadFile): boolean => {
     let gifFlag: boolean = !(file.name.lastIndexOf(".gif") <= 0 || file.name.lastIndexOf(".gif") != file.name.length - 4);
     let pngFlag: boolean = !(file.name.lastIndexOf(".png") <= 0 || file.name.lastIndexOf(".png") != file.name.length - 4);
@@ -260,12 +296,22 @@ export class NoteComponent implements OnInit {
       return false;
     }
 
+    this.imgFile = file;
+
+    this.uploadImgFile();
+
+    return false;
+  }
+
+  uploadImgFile(){
 
     this.uploadByFileWaiting = true;
 
     const formData = new FormData();
     formData.append("token", this.token);
-    formData.append("picture", <any>file);
+    formData.append("picture", <any>this.imgFile);
+
+    this.imgFile = null;
 
     this.commonService.uploadPicture(formData).subscribe(re => {
       if(re["code"] === 0){
@@ -281,7 +327,7 @@ export class NoteComponent implements OnInit {
         this.commonService.wrongCode(re, "uploadByFile");
       }
     });
-    return false;
-  };
+  }
+
 
 }
