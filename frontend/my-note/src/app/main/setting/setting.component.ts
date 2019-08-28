@@ -32,6 +32,8 @@ export class SettingComponent implements OnInit {
   configInit: boolean = false;
   configWaiting: boolean = false;
 
+  emptyWaiting: boolean = false;
+
   constructor(
     private route: ActivatedRoute,
     private commonService: CommonService,
@@ -101,6 +103,21 @@ export class SettingComponent implements OnInit {
         this.commonService.wrongCode(re, "passwordSave");
       }
     });
+  }
+
+  // 清除多余的图片文章数据
+  emptyUselessData(){
+    this.emptyWaiting = true;
+    this.commonService.emptyUselessData(this.token).subscribe(re => {
+      if(re["code"] === 0){
+        this.emptyWaiting = false;
+        this.message.create("success", "清理成功！");
+      }else{
+        this.emptyWaiting = false;
+        this.commonService.wrongCode(re, "emptyUselessData");
+      }
+    });
+
   }
 
 }

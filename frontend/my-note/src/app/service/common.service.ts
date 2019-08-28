@@ -259,6 +259,17 @@ export class CommonService {
       catchError(this.handleError('savePassword', data))
     );
   }
+
+  // 清除冗余数据
+  emptyUselessData(token0: string){
+    let data = {
+      token: token0
+    }
+    return this.http.post(this.server + "/EmptyUselessData.php", data)
+    .pipe(
+      catchError(this.handleError('emptyUselessData', data))
+    );
+  }
   
 
   // 请求异常的处理

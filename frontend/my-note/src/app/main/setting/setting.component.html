@@ -41,7 +41,7 @@
     <nz-divider></nz-divider>
 
     <div nz-row class="button-row">
-        <button nz-button nzType="primary">清理冗余文章和图片数据</button>
+        <button nz-button nzType="primary" [nzLoading]="emptyWaiting" (click)="emptyUselessData()">清理冗余文章和图片数据</button>
     </div>
 
 
