@@ -92,7 +92,8 @@ export class NoteComponent implements OnInit {
   notePretreat(){
     this.noteInit = false;
     (<Array<any>>this.note["data"]).forEach(item => {
-      let server: string = "http://127.0.0.1:80/php/note/img/";
+      let server: string = this.sessionStorage.get("serverPath");
+      server += "/note/img/";
       if(item["type"] === "img"){
         item["safeURL"] = this.passSecurity.bypassSecurityTrustResourceUrl(server + item["content"]);
       }

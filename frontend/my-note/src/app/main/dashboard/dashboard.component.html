@@ -1,0 +1,8 @@
+<div id="dashboard-page" class="dashboard-page" (click)="myClick($event)">
+    <canvas id="canvas" class="bg"></canvas>
+    <div class="content" *ngIf="configInit">
+        <div class="title">
+            welcome to {{config["title"]}}!
+        </div>      
+    </div>
+</div>

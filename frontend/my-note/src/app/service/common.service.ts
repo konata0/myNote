@@ -1,6 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { NzMessageService } from 'ng-zorro-antd';
+import { SESSION_STORAGE, WebStorageService} from 'angular-webstorage-service';
+
 
 
 
@@ -23,11 +25,13 @@ export class CommonService {
 
   constructor(
     public http: HttpClient,
-    private message: NzMessageService
+    private message: NzMessageService,
+    @Inject(SESSION_STORAGE) private sessionStorage: WebStorageService,
   ) { }
 
   // 登录反馈
   passwordCheck(data: any){
+    this.sessionStorage.set("serverPath", this.server);
     return this.http.post(this.server + "/Login.php", data)
     .pipe(
       catchError(this.handleError('passwordCheck:', []))

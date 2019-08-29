@@ -1,1 +1,0 @@
-{"id":1,"name":"test","private":true,"createTime":"2019-08-27 20:41:35","updateTime":"2019-08-27 21:47:10","data":[{"id":0,"type":"p","content":"this is a new file!","size":1},{"id":1,"type":"img","content":"20190827214700.png","size":100,"safeURL":{"changingThisBreaksApplicationSecurity":"http:\/\/127.0.0.1:80\/php\/note\/img\/20190827214700.png"}}]}

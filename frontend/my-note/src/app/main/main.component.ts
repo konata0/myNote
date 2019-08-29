@@ -402,6 +402,7 @@ export class MainComponent implements OnInit {
         this.fileDeleteWaiting = false;
         this.fileDeleteCancel();
         this.getCatalogue();
+        this.router.navigateByUrl("/main");
       }else{
         this.commonService.wrongCode(re, "fileDelete");
         this.fileDeleteWaiting = false;
