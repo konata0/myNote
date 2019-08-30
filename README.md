@@ -12,3 +12,11 @@
 登录部分，初始密码123456，密码可于设置中修改，如果忘记密码，可直接在/php/security/data.json中修改password一项，其值为密码MD5码。
 目录部分，可点击右键进行文件夹及文件的编辑操作。
 文章部分，点击编辑按钮开启文章编辑，对具体内容右键点击可进行具体编辑。图片上传可使用 ctrl + v 直接进行。
+
+## 页面截图
+
+![p1](https://github.com/konata0/myNote/blob/master/pagePictures/p1.png)
+
+![p2](https://github.com/konata0/myNote/blob/master/pagePictures/p2.png)
+
+![p3](https://github.com/konata0/myNote/blob/master/pagePictures/p3.png)
