@@ -31,15 +31,9 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.canvas = document.getElementById('canvas');
-    this.width = document.getElementById('dashboard-page').clientWidth;
-    this.hight = document.getElementById('dashboard-page').clientHeight;
-    this.canvas.width = this.width;
-    this.canvas.height = this.hight;
-    this.maxR = this.width * this.width + this.hight * this.hight;
-    this.cvs = this.canvas.getContext('2d');  
-    this.cvs.strokeStyle = '#1890ff';
-    this.cvs.lineWidth = 3;
 
+    this.refreshSize();
+    
     this.getConfig();
 
     this.anime();
@@ -71,6 +65,7 @@ export class DashboardComponent implements OnInit {
 
   anime(){
     this.clean();
+    this.refreshSize();
     this.circleList.forEach(circle => {
       if(circle["r"] > 0){
         this.cvs.beginPath();
@@ -90,6 +85,17 @@ export class DashboardComponent implements OnInit {
 
   clean(){
     this.cvs.clearRect(0, 0, this.width, this.hight);
+  }
+
+  refreshSize(){
+    this.width = document.getElementById('dashboard-page').clientWidth;
+    this.hight = document.getElementById('dashboard-page').clientHeight;
+    this.canvas.width = this.width;
+    this.canvas.height = this.hight;
+    this.maxR = this.width * this.width + this.hight * this.hight;
+    this.cvs = this.canvas.getContext('2d');  
+    this.cvs.strokeStyle = '#1890ff';
+    this.cvs.lineWidth = 3;
   }
 
 }
