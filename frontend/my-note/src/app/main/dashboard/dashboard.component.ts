@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
+import { LOCAL_STORAGE, SESSION_STORAGE, WebStorageService} from 'angular-webstorage-service';
 
 import { CommonService } from '../../service/common.service';
 
@@ -27,6 +28,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private commonService: CommonService,
+    @Inject(SESSION_STORAGE) private sessionStorage: WebStorageService,
   ) { }
 
   ngOnInit() {
@@ -64,6 +66,10 @@ export class DashboardComponent implements OnInit {
   }
 
   anime(){
+    let flag = this.sessionStorage.get("myNoteAnime");
+    if(!flag){
+      return;
+    }
     this.clean();
     this.refreshSize();
     this.circleList.forEach(circle => {

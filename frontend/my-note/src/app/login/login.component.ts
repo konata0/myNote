@@ -29,12 +29,17 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit() { 
+    // 初始化地址
+    this.commonService.addressInit();
+
     // 初始化登录数据
     this.getLoginData();
     if(this.autoLogin){
       this.adminLogin();
     }
   }
+
+  
 
   // 获取登录数据
   getLoginData(){
@@ -77,6 +82,7 @@ export class LoginComponent implements OnInit {
         this.sessionStorage.set("myNoteIfLogin", true);
         this.adminLoginWaiting = false;
         this.visitorLoginWaiting = false;
+        this.sessionStorage.set("myNoteAnime", true);
         this.router.navigateByUrl("/main");
       }
     })

@@ -224,6 +224,7 @@ export class MainComponent implements OnInit {
   activeNodeChange(data: NzFormatEmitEvent): void {
     this.activeNode = data.node!;
     if(this.activeNode.origin["isLeaf"]){
+      this.sessionStorage.set("myNoteAnime", false);
       this.router.navigateByUrl("/main/note?id=" + (<number><any>this.activeNode.origin["key"]).toString());
     }
   }
@@ -449,10 +450,23 @@ export class MainComponent implements OnInit {
 
   // 退出
   logout(){
+    this.sessionStorage.set("myNoteAnime", false);
     this.localStorage.set("myNoteAutoLogin", false);
     this.sessionStorage.set("myNoteToken", null);
     this.sessionStorage.set("myNoteIfLogin", false);
     this.router.navigateByUrl("/login");
+  }
+
+  // 回到主页
+  dashboard(){
+    this.sessionStorage.set("myNoteAnime", true);
+    this.router.navigateByUrl("/main");
+  }
+
+  // 设置
+  setting(){
+    this.sessionStorage.set("myNoteAnime", false);
+    this.router.navigateByUrl("/main/setting");
   }
 
   log(data: any){

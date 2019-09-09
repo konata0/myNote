@@ -21,7 +21,7 @@ const httpOptions = {
 })
 export class CommonService {
 
-  server: string = "http://127.0.0.1:80/php";
+  server: string = null;
 
   constructor(
     public http: HttpClient,
@@ -29,9 +29,16 @@ export class CommonService {
     @Inject(SESSION_STORAGE) private sessionStorage: WebStorageService,
   ) { }
 
+  // 初始化地址
+  addressInit(){
+    //let host = window.location.host;
+    let host = document.domain
+    this.server = "http://" + host + "/php";
+    this.sessionStorage.set("serverPath", this.server);
+  }
+
   // 登录反馈
   passwordCheck(data: any){
-    this.sessionStorage.set("serverPath", this.server);
     return this.http.post(this.server + "/Login.php", data)
     .pipe(
       catchError(this.handleError('passwordCheck:', []))
