@@ -55,7 +55,7 @@ export class DashboardComponent implements OnInit {
   }
 
   myClick(event: any){
-    let x0 = event["clientX"] - 200;
+    let x0 = event["clientX"] - 240;
     let y0 = event["clientY"] - 40;
     let newCircle = {
       x: x0,
